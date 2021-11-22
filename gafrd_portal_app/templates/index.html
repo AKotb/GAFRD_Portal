@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>الرئيسية</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.js"></script>
+</head>
+<body>
+
+<div class="header">
+	<div class="row">
+		{% load static %}
+		<img class="col_header1" src="{% static 'img/h_img1.png' %}">
+		<img class="col_header2" src="{% static 'img/h_img2.png' %}">
+	  <div class="col_header3">
+		<p>جمهورية مصر العربية</p>
+		<p>الهيئة العامة لتنمية الثروة السمكية</p>
+	  </div>
+		<img class="col_header4" src="{% static 'img/h_img3.png' %}">
+	</div>
+</div>
+
+<div class="row main">
+  <div class="leftcolumn">
+	<div class="card card-menu">
+		<div class="row-menu">
+		  <a href="login.html">
+			<div class="col-menu col-menu-all">تسجيل الدخول</div>
+		  </a>
+		  <a href="contact_us.html">
+			<div class="col-menu col-menu-all">اتصل بنا</div>
+		  </a>
+		  <a href="services.html">
+			<div class="col-menu col-menu-all">خدماتنا</div>
+		  </a>
+		  <a href="e_library.html">
+			<div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
+		  </a>
+		  <a href="index.html">
+			<div class="col-menu col-menu-last">الرئيسية</div>
+		  </a>
+		</div>
+	</div>
+	<div class="card card-map">
+		<div id="mapid" style="position: relative; height:100%; width:100%; z-index:1000"></div>
+		<div id="toolbar" style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:250px; height: 35px; display: block; ">
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='showHand()'><img src="{% static 'img/hand.png' %}" width="31px"/></a></div>
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomToExtent()'><img src="{% static 'img/lookup.png' %}" width="31px"/></a></div>
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomOutDraw()'><img src="{% static 'img/zoomout.png' %}" width="33px"/></a></div>
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomInDraw()'><img src="{% static 'img/zoomin.png' %}" width="31px"/></a></div>
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomOut()'><img src="{% static 'img/initialextent.png' %}" width="34px"/></a></div>
+			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomIn()'><img src="{% static 'img/fullextent.png' %}" width="31px"/></a></div>
+			<div style="width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='edit()'><img src="{% static 'img/draw.png' %}" width="38px"/></a>
+				<div leaflet style="height: 0px;" [leafletOptions]="options">
+					<div *ngIf="shown" leafletDraw [leafletDrawOptions]="drawOptions"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
+  <div class="rightcolumn">
+			<div class="card card-search">
+				<button class="search-icon" type="submit"><i></i></button>
+				<input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
+				<button class="search-button">البحث</button>
+			</div>
+			<div class="card card-adv-search">
+				<div class="fast-search"><a href="#" class="fast-search-link">بحث سريع</a></div>
+				<div class="reset">
+					<button class="search-icon" type="submit"><i></i></button>
+					<span class="search-span">بحث متقدم</span>
+					<a href="#" class="fast-search-link">إعادة ظبط</a>
+				</div>
+			</div>
+			<div class="card card-toc">
+				<table dir="rtl">
+					<tr>
+						<select class='select-dropdown'>
+						  <option value="-1">تحديد المكان</option>
+						  <option value="1">إدخال من الخريطة</option>
+						  <option value="2">تحميل shapefile</option>
+						</select>
+					</tr>
+					<tr>
+						<select class='select-dropdown'>
+						  <option value="-1">تحديد نوع السمك</option>
+						  <option value="1">بلطي</option>
+						  <option value="2">بوري</option>
+						  <option value="3">دنيس</option>
+						  <option value="4">لوط</option>
+						</select>
+					</tr>
+					<tr>
+						<select class='select-dropdown'>
+						  <option value="-1">تحديد مصدر المياه</option>
+						  <option value="1">بحار</option>
+						  <option value="2">بحيرات</option>
+						  <option value="3">ترع ومصارف</option>
+						  <option value="4">مياه جوفية</option>
+						  <option value="5">نهر النيل</option>
+						</select>
+					</tr>
+				</table>
+				
+				<table class="index-table" dir="rtl">
+					<tr>
+						<select class='select-dropdown'>
+							<option value="-1">تحديد مؤشرات جودة المياه</option>
+						</select>
+					</tr>
+					<tr>
+						<td class='quality-lbl'>pH</td>
+						<td>
+							<input type="range" min="0" max="100" value="50" class="slider" id="myRange1">
+						</td>
+						
+					</tr>
+					<tr><td></td></tr><tr><td></td></tr>
+					<tr>
+						<td class='quality-lbl'>Salinity</td>
+						<td>
+							<input type="range" min="0" max="100" value="50" class="slider" id="myRange2">
+						</td>
+						
+					</tr>
+					<tr><td></td></tr><tr><td></td></tr>
+					<tr>
+					<tr>
+						<td class='quality-lbl'>DO</td>
+						<td>
+							<input type="range" min="0" max="100" value="50" class="slider" id="myRange3">
+						</td>
+						
+					</tr>
+				</table>
+				<button class="button">عرض النتائج</button>
+			</div>
+  </div>
+</div>
+
+<script>
+	var polygonCoordinates = "";
+	var firstClick = false;
+	var temp = "";
+	var drawControlCreated = false;
+	var zoomInByDraw = false;
+	var zoomOutByDraw = false;
+	var bounds;
+	var mapUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+	
+	var satellite = L.tileLayer(mapUrl, {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		id: 'mapbox/satellite-v9',
+		tileSize: 512,
+		zoomOffset: -1
+	});
+	
+	var streets = L.tileLayer(mapUrl, {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1
+	});
+	
+	var map = L.map('mapid', {
+		center: [27.3, 30.8],
+		zoom: 6,
+		zoomSnap: 0.25,
+		layers: [satellite]
+	});
+	
+	var baseLayers = {
+		"Satellite View": satellite,
+		"Map View": streets,
+	};
+	
+	var editableLayers = new L.FeatureGroup();
+	map.addLayer(editableLayers);
+	var overlayMaps = {
+		"الطبقات المضافة": editableLayers
+	};
+	L.control.layers(baseLayers, overlayMaps).addTo(map);
+	var drawPluginOptions = {
+	  position: 'topleft',
+	  draw: {
+		polyline: false,
+		polygon: {
+		  allowIntersection: false, // Restricts shapes to simple polygons
+		  drawError: {
+			color: '#e1e100', // Color the shape will turn when intersects
+			message: '<strong>Polygon draw does not allow intersections!<strong> (allowIntersection: false)' // Message that will show when intersect
+		  },
+		  shapeOptions: {
+			color: '#ff2222'
+		  }
+		},
+		circle: false, // Turns off this drawing tool
+		rectangle: false,
+		marker: false,
+		circlemarker: false
+	},
+	edit: {
+		featureGroup: editableLayers, //REQUIRED!!
+		remove: true
+	  }};
+
+ var latlng1;
+ var latlng2;
+ 
+map.on('click', function (e) {
+
+	/*if(zoomByDraw){
+		if(firstClick){
+			latlng2 = L.latLng(e.latlng.lat, e.latlng.lng);
+			firstClick = false;
+		}
+		else{
+			latlng1 = L.latLng(e.latlng.lat, e.latlng.lng);
+			firstClick = true;
+			bounds = L.latLngBounds(latlng2, latlng1);
+			bounds = bounds.getBounds ? bounds.getBounds() : L.latLngBounds(bounds);
+			if(bounds.isValid())
+				//map.flyToBounds(bounds);
+				//map.panInsideBounds(bounds);
+				//map.fitBounds(bounds);
+		}
+			
+	}*/
+	if(zoomInByDraw)
+		map.zoomIn(0.25, {animate:false});
+	if(zoomOutByDraw)
+		map.zoomOut(0.25, {animate:false});
+});
+
+function zoomToExtent(){
+	map.setView([27.3, 30.8], 6);
+}
+
+function zoomOutDraw(){
+	zoomOutByDraw = true;
+	zoomInByDraw = false;
+    L.DomUtil.addClass(map._container,'crosshair-cursor-enabled');
+	//map.dragging.disable();
+}
+
+function zoomInDraw(){
+	zoomOutByDraw = false;
+	zoomInByDraw = true;
+    L.DomUtil.addClass(map._container,'crosshair-cursor-enabled');
+	//map.dragging.disable();
+}
+
+function zoomIn(){
+    map.zoomIn(1.25);
+}
+
+function zoomOut(){
+    map.zoomOut(1.25);
+}
+
+function showHand(){
+    L.DomUtil.removeClass(map._container,'crosshair-cursor-enabled');
+	map.dragging.enable();
+	zoomOutByDraw = false;
+	zoomInByDraw = false;
+}
+
+function edit(){
+	if(drawControlCreated)
+	{
+		this.map.removeControl(this.drawControl);
+		drawControlCreated = false;
+	}
+	
+	else{
+		drawControl = new L.Control.Draw(drawPluginOptions);
+		map.addControl(drawControl);
+		map.on(L.Draw.Event.CREATED, function(e) {
+		  var type = e.layerType,
+			layer = e.layer;
+			var tempArray = layer._latlngs[0];
+		  if (type === 'polygon') {
+			polygonCoordinates +="["
+			for(var i=0; i<tempArray.length; i++)
+			{
+				temp += "[" + tempArray[i].lat+","+tempArray[i].lng + "]";
+				if(i === tempArray.length - 1)
+					break;
+				else
+					temp +=",";
+			}
+			polygonCoordinates +=temp + "]";
+			console.log(polygonCoordinates);
+			console.log(tempArray);
+			var popupContent = polygonCoordinates;
+			layer.bindPopup(popupContent).openPopup();
+		  }
+		  editableLayers.addLayer(layer);
+		});
+		
+		map.on(L.Draw.Event.EDITED, function (e) {
+				var layers = e.layers;
+				var countOfEditedLayers = 0;
+				layers.eachLayer(function(layer) {
+					countOfEditedLayers++;
+				});
+				console.log("Edited " + countOfEditedLayers + " layers");
+			});
+			
+		map.on('draw:deleted', function(e){
+			
+			tempArray = null;
+			temp = "";
+			polygonCoordinates = "";
+			console.log(tempArray);
+			console.log(polygonCoordinates);
+		});
+		drawControlCreated = true;
+	}
+}
+</script>
+</body>
+</html>

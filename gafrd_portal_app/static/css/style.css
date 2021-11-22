@@ -1,0 +1,451 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Add a gray background color with some padding */
+html, body {
+  font-family: Arial;
+  /*padding: 20px;*/
+  background: #f1f1f1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+a{
+	color:white;
+	text-decoration: none;
+}
+
+/* Create four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+  padding: 10px;
+  height: 100px; /* Should be removed. Only for demonstration */
+}
+
+.col-menu {
+  float: left;
+  width: 16%;
+  padding: 10px 5px 0 5px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  background-color:rgb(47, 85, 151);
+  height: 40px; /* Should be removed. Only for demonstration */
+  border:1px solid black;
+}
+
+.col-menu-all  { margin: 0 5% 0 0; }
+.col-menu-last { margin: 0; }
+
+.col-menu:hover{
+	background-color: rgb(0, 32, 96);
+}
+
+.col_header1 {
+  float: left;
+  width: 10%;
+  padding: 0;
+  height: 100px; /* Should be removed. Only for demonstration */
+  border:1px solid black;
+}
+.col_header2 {
+  float: left;
+  width: 58%;
+  padding: 0;
+  height: 100px; /* Should be removed. Only for demonstration */
+  border:1px solid black;
+}
+.col_header3 {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
+  height: 100px; /* Should be removed. Only for demonstration */
+  border:1px solid black;
+}
+.col_header4 {
+  float: left;
+  width: 7%;
+  padding: 0;
+  height: 100px; /* Should be removed. Only for demonstration */
+  border:1px solid black;
+}
+/* Header/Blog Title */
+.header {
+  padding: 0;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: right;
+  background: white;
+  /*border:1px solid black;*/
+}
+
+.main{
+	height:calc(100% - 102px);
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {   
+  float: left;
+  width: 75%;
+  height: 100%;
+  border:1px solid black;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  height: 100%;
+  /*padding-left: 5px;*/
+  border:1px solid #116aab;
+  overflow-y: auto;
+}
+
+/* Fake image */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+   background-color: white;
+   padding: 0;
+   margin: 0;
+   /*border:1px solid black;*/
+}
+
+.card-menu { height:7%; }
+.card-map  { min-height:300px; height:93%; /*border:1px solid black;*/}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  /*padding: 20px;*/
+  text-align: center;
+  background: #ddd;
+  /*margin-top: 20px;*/
+  border:1px solid black;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 1000px) {
+  .col_header1 {width: 13%;}
+  .col_header4 {width: 10%;}
+  .col_header2 {width: 42%;}
+  .col_header3 {width: calc(35% - 2px);}
+  .col-menu-all  { margin: 0 2.5% 0 0; }
+  .col-menu {width: 18%;}
+}
+
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {width: 100%;}
+  .col_header1, .col_header4 {width: 15%;}
+  .col_header2 {width: 0%;}
+  .col_header3 {width: calc(70% - 2px);}
+  .col-menu-all  { margin: 0 1.25% 0 0; }
+  .col-menu {width: 19%;}
+}
+
+@media screen and (max-width: 600px) {
+  .col_header1 {width: 25%;}
+  .col_header2, .col_header4 {width: 0%;}
+  .col_header3 {width: calc(75% - 5px);}
+  .col-menu-all  { margin: 0; }
+  .col-menu {width: 20%;}
+}
+
+/* Right Panel search */
+.card-search { height:7%; background-color: rgb(42,42,44); }
+.card-adv-search  { height:10%; background-color: rgb(244,243,243);}
+.card-toc { height:83%; background-color: white; padding: 20px;}
+.fast-search { height:50%; background-color: rgb(244,243,243); width: 100%; direction: rtl;}
+.reset { height:50%; background-color: rgb(244,243,243); width: 100%;}
+.fast-search-link{color:rgb(136,10,15); text-decoration: none; cursor: pointer; font-weight: bold;}
+.search-span{float: right; margin-right: 5px; color: rgb(76,82,91);}
+
+.search-button{
+	width: 15%;
+	background-color: rgb(136,10,15);
+	height: 100%;
+	float:left;
+	font-size: 13px;
+	color: white;
+	cursor: pointer;
+}
+
+.search-icon {
+  border-radius: 20px;
+  float:right;
+  width: 10%;
+  background-color: rgb(42,42,44);
+  cursor: pointer;
+  height: 100%;
+  background: url("../img/search-icon.png") no-repeat scroll 0 0 transparent;
+}
+
+input[type=text] {
+  height: 100%;
+  width: 74%;
+  font-size: 12px;
+  border: none;
+  background-color: rgb(42,42,44);
+  direction: rtl;
+  color: rgb(211,206,200);
+  float:right;
+  margin-right: 1%;
+}
+
+.quality-lbl{
+	background-color:rgb(47, 85, 151);
+	color: white;
+	padding: 7px;
+	margin: 10px;
+	width: 30%;
+	font-weight: bold;
+	text-align: center;
+}
+
+.quality-slider{
+	color: black;
+	width: 85%;
+	font-weight: bold;
+	text-align: center;
+}
+
+.slider {
+	  -webkit-appearance: none;
+	  width: 85%;
+	  height: 2px;
+	  border-radius: 5px;
+	  background: black;
+	  outline: none;
+	  opacity: 1.0;
+	  -webkit-transition: .2s;
+	  transition: opacity .2s;
+	}
+
+	.slider:hover {
+	  opacity: 1;
+	}
+
+	.slider::-webkit-slider-thumb {
+	  -webkit-appearance: none;
+	  appearance: none;
+	  width: 15px;
+	  height: 15px;
+	  border-radius: 50%;
+	  background: black;
+	  /*background: url("images/fish-icon.png");*/
+	  cursor: pointer;
+	}
+
+	.slider::-moz-range-thumb {
+	  width: 15;
+	  height: 15px;
+	  border-radius: 50%;
+	  background: black;
+	  /*background: url("images/fish-icon.png");*/
+	  cursor: pointer;
+	}
+	
+.select-dropdown{
+	border-left:0px; 
+	border-right:0px; 
+	border-top:0px; 
+	outline:0px;
+	width:90%;
+	padding-left:5%; 
+	direction:rtl; 
+	height: 30px; 
+	float: right; 
+	margin-top: 20px;
+	font-weight:bold;
+}
+
+.index-table{
+	margin-top: 10px;
+	float:right; 
+	width: 100%;
+}
+
+.button {
+	  background-color: #4CAF50; /* Green */
+	  border: none;
+	  color: white;
+	  padding: 10px 20px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 20px;
+	  font-weight:bold;
+	  margin-top: 15px;
+	  margin-left: 75px;
+	  transition-duration: 0.4s;
+	  cursor: pointer;
+}
+
+.e-library-header {
+	width: 100%;
+	height: 10%; 
+	padding-top: 10px;
+	background-color: rgb(68,114,196);
+	color: white;
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.e-library-toc {
+	width: 100%;
+	height: 80%; 
+	background-color: white;
+	overflow-y: auto;
+}
+
+.accordion-content {
+    display: none;
+}
+
+.side-nav-link {
+	position: relative;
+    color: black;
+    /*float: right;*/
+    font-size: 20px;
+	cursor: pointer;
+	border: none;
+	text-decoration: underline;
+	box-sizing: border-box;
+}
+
+.collaps {
+	  color: black;
+	  float: right;
+	  font-size: 20px;
+	  cursor: pointer;
+	  border: none;
+	  text-align: right;
+	  outline: none;
+	  text-decoration: underline;
+	}
+
+	/*.active, .collaps:hover {
+	  background-color: #afa;
+	}*/
+
+	.collaps:after {
+	  content: '\002B';
+	  color: black;
+	  font-weight: bold;
+	  float: right;
+	  margin-left: 5px;
+	}
+
+	.active:after {
+	  content: "\2212";
+	}
+	
+	.e-library-table {
+		float: right; 
+		margin-right: 10px;
+		margin-top: 10px;
+		height: 15%;
+		width: 100%;
+		overflow-y: auto;
+	}
+	
+	.e-library-img{
+		width: 100%; 
+		height: 100%;
+		display: block;
+	}
+	
+	.fish-types-div{
+		width: 100%; 
+		height: 100%;
+		display: none;
+	}
+	
+	.fish-types-span {
+		border:1px solid rgb(68,114,196); 
+		margin-top: 30px; 
+		margin-right: 10px; 
+		float: right; 
+		width: 98%; 
+		height: 90%; 
+		background-image: linear-gradient(rgb(230,235,245) , rgb(136,159,215));
+		overflow-y: auto;
+	}
+	
+	.fish-types-h1 {
+		text-align: center; 
+		color: rgb(47,85,151); 
+		direction: rtl;
+	}
+	
+	.fish-types-h5 {
+		text-align: right; 
+		color: rgb(47,85,151); 
+		direction: rtl;
+	}
+	
+	.fish-types-intro{
+		text-align: right; 
+		direction: rtl; 
+		font-size: 20px; 
+		padding-right: 5px;
+	}
+	
+	.fish-types-ol {
+		list-style-type: decimal; 
+		direction: rtl;
+	}
+	
+	.fish-types-li {
+		color: rgb(47,85,151); 
+		font-size: 20px;
+	}
+	
+	.fish-types-p{
+		float: right; 
+		direction: rtl; 
+		text-align: justify; 
+		font-size: 19px;
+	}
+	
+	.fish-types-ul{
+		list-style-type: none; 
+		direction: rtl;
+		display: none;
+		float: right;
+		text-decoration: underline;
+		font-size: 20px;
+		cursor: pointer;
+	}
+	
+	.fish-bayad-ul{
+		direction: rtl;
+		display: block;
+		float: right;
+		text-decoration: none;
+		font-size: 20px;
+	}
+	
+
+.leaflet-container.crosshair-cursor-enabled {
+    cursor:crosshair;
+}
