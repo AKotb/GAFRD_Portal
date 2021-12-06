@@ -6,10 +6,10 @@
 	{% load static %}
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.css" />
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.12/leaflet.draw.js"></script>
 </head>
 <body>
 
@@ -30,19 +30,19 @@
   <div class="leftcolumn">
 	<div class="card card-menu">
 		<div class="row-menu">
-		  <a href="login.html">
+		  <a href="{% url 'login' %}">
 			<div class="col-menu col-menu-all">تسجيل الدخول</div>
 		  </a>
-		  <a href="contact_us.html">
+		  <a href="{% url 'contactus' %}">
 			<div class="col-menu col-menu-all">اتصل بنا</div>
 		  </a>
-		  <a href="services.html">
+		  <a href="{% url 'services' %}">
 			<div class="col-menu col-menu-all">خدماتنا</div>
 		  </a>
-		  <a href="e_library.html">
+		  <a href="{% url 'elibrary' %}">
 			<div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
 		  </a>
-		  <a href="index.html">
+		  <a href="{% url 'index' %}">
 			<div class="col-menu col-menu-last">الرئيسية</div>
 		  </a>
 		</div>
