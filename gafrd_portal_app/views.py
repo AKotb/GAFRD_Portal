@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
+from gafrd_portal_app.run import ExecuteModel
 
 def index(request):
     """View function for home page of site."""
@@ -41,9 +42,10 @@ def elibrary(request):
 def model_call(request):
     if request.method == 'POST' and 'run_script' in request.POST:
 
-        print("Hello Python Code")
+        in_dir = r'D:\NARSS\GAFRD_Portal\Model\TS Model Code and Data\model_data_path'
+        out_dir = r'D:\NARSS\GAFRD_Portal\Model\TS Model Code and Data\model_data_path\outputs'
 
-        from gafrd_portal_app import run
+        ExecuteModel.run(in_dir, out_dir)
 
         # return user to required page
         return render(request, 'e_library.html')
