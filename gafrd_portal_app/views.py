@@ -48,4 +48,4 @@ def model_call(request):
         ExecuteModel.run(in_dir, out_dir)
 
         # return user to required page
-        return render(request, 'e_library.html')
+        return render(request, 'contact_us.html')

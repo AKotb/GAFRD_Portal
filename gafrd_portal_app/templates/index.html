@@ -8,8 +8,8 @@
 	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 </head>
 <body>
 
@@ -140,6 +140,18 @@
 					</tr>
 				</table>
 				<button class="button">عرض النتائج</button>
+			</div>
+
+	  		<div class="results">
+				<ul>
+					<li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
+					<li><a href="#" onclick="load_results('FinalSuitabilityMapModel.png')">عرض نتيجة رقم 29</a></li>
+					<li><a href="#" onclick="load_results('FinalSuitabilityModel.png')">عرض نتيجة رقم 28</a></li>
+					<li><a href="#" onclick="load_results('SoilSubModel.png')">عرض نتيجة رقم 26</a></li>
+					<li><a href="#" onclick="load_results('SocioEconomic.png')">عرض نتيجة رقم 21</a></li>
+					<li><a href="#" onclick="load_results('WaterAvailabilitySubModel.png')">عرض نتيجة رقم 18</a></li>
+					<li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li>
+				</ul>
 			</div>
   </div>
 </div>
@@ -327,6 +339,14 @@ function edit(){
 		});
 		drawControlCreated = true;
 	}
+}
+
+function load_results(id){
+    var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id
+    imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]];
+	L.imageOverlay(imageUrl, imageBounds).addTo(map);
+	L.imageOverlay(imageUrl, imageBounds).bringToFront();
+	map.setView(new L.LatLng(-29.267099228998973, 24.31585495414143), 5);
 }
 </script>
 </body>
