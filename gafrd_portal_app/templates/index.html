@@ -143,15 +143,20 @@
 			</div>
 
 	  		<div class="results">
-				<ul>
-					<li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
+					<!-- <li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
 					<li><a href="#" onclick="load_results('FinalSuitabilityMapModel.png')">عرض نتيجة رقم 29</a></li>
 					<li><a href="#" onclick="load_results('FinalSuitabilityModel.png')">عرض نتيجة رقم 28</a></li>
 					<li><a href="#" onclick="load_results('SoilSubModel.png')">عرض نتيجة رقم 26</a></li>
 					<li><a href="#" onclick="load_results('SocioEconomic.png')">عرض نتيجة رقم 21</a></li>
 					<li><a href="#" onclick="load_results('WaterAvailabilitySubModel.png')">عرض نتيجة رقم 18</a></li>
-					<li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li>
-				</ul>
+					<li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li> -->
+					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"  id="FinalSuitabilityMapModelReclassify"/><label style="float: left;">Final Suitability Map Model Reclassify</label><br />
+					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')"  id="FinalSuitabilityMapModel"/><label style="float: left;">Final Suitability Map Model</label><br />
+					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')"  id="FinalSuitabilityModel"/><label style="float: left;">Final Suitability Model</label><br />
+					<input type="checkbox" onclick="checkbox_status('SoilSubModel')"  id="SoilSubModel"/><label style="float: left;">Soil Sub-Model</label><br />
+					<input type="checkbox" onclick="checkbox_status('SocioEconomic')"  id="SocioEconomic"/><label style="float: left;">Socio Economic</label><br />
+					<input type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"  id="WaterAvailabilitySubModel" /><label style="float: left;">Water Availability Sub-Model</label><br />
+					<input type="checkbox" onclick="checkbox_status('FinalRestrictionModel')"  id="FinalRestrictionModel" /><label style="float: left;">Final Restriction Model</label><br />
 			</div>
   </div>
 </div>
@@ -165,7 +170,9 @@
 	var zoomOutByDraw = false;
 	var bounds;
 	var mapUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-	
+	var image;
+	var listOfImages = [];
+
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -341,12 +348,36 @@ function edit(){
 	}
 }
 
+function checkbox_status(id){
+	var selected_checkbox = document.getElementById(id);
+	if (selected_checkbox.checked != true){
+    	remove_results(id)
+	} else{
+		load_results(id);
+	}
+}
+
 function load_results(id){
-    var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id
-    imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]];
-	L.imageOverlay(imageUrl, imageBounds).addTo(map);
-	L.imageOverlay(imageUrl, imageBounds).bringToFront();
+	var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
+    var imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]];
+	image = L.imageOverlay(imageUrl, imageBounds);
+	image.addTo(map);
+	image.bringToFront();
 	map.setView(new L.LatLng(-29.267099228998973, 24.31585495414143), 5);
+	listOfImages.push(image);
+}
+
+function remove_results(id){
+	var checkedURL = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
+	listOfImages.forEach(function(entry) {
+    	if(checkedURL === entry["_url"]){
+    		map.removeLayer(entry);
+    		var index = listOfImages.indexOf(entry);
+    		if (index > -1) {
+    			listOfImages.splice(index, 1);
+    		}
+    	}
+	});
 }
 </script>
 </body>
