@@ -1,0 +1,4 @@
+Django~=3.2.9
+GDAL~=3.3.3
+numpy~=1.21.4
+opencv-python~=4.5.4.60
