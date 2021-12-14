@@ -45,9 +45,9 @@
         <div class="card card-map">
             <div>
                 <h1>Services Page</h1>
-                <form action="{% url 'model_call' %}" method="post">
+                <form name="model_parameters_form" action="{% url 'model_call' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" name="run_script">Run script</button>
+                    <button type="submit" name="run_module">Run Module</button>
                 </form>
             </div>
         </div>
@@ -68,6 +68,5 @@
         </div>
     </div>
 </div>
-
 </body>
 </html>

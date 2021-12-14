@@ -1,164 +1,194 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>الرئيسية</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	{% load static %}
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
-	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
-	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <title>الرئيسية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 </head>
 <body>
 
 <div class="header">
-	<div class="row">
-		{% load static %}
-		<img class="col_header1" src="{% static 'img/h_img1.png' %}">
-		<img class="col_header2" src="{% static 'img/h_img2.png' %}">
-	  <div class="col_header3">
-		<p>جمهورية مصر العربية</p>
-		<p>الهيئة العامة لتنمية الثروة السمكية</p>
-	  </div>
-		<img class="col_header4" src="{% static 'img/h_img3.png' %}">
-	</div>
+    <div class="row">
+        {% load static %}
+        <img class="col_header1" src="{% static 'img/h_img1.png' %}">
+        <img class="col_header2" src="{% static 'img/h_img2.png' %}">
+        <div class="col_header3">
+            <p>جمهورية مصر العربية</p>
+            <p>الهيئة العامة لتنمية الثروة السمكية</p>
+        </div>
+        <img class="col_header4" src="{% static 'img/h_img3.png' %}">
+    </div>
 </div>
 
 <div class="row main">
-  <div class="leftcolumn">
-	<div class="card card-menu">
-		<div class="row-menu">
-		  <a href="{% url 'login' %}">
-			<div class="col-menu col-menu-all">تسجيل الدخول</div>
-		  </a>
-		  <a href="{% url 'contactus' %}">
-			<div class="col-menu col-menu-all">اتصل بنا</div>
-		  </a>
-		  <a href="{% url 'services' %}">
-			<div class="col-menu col-menu-all">خدماتنا</div>
-		  </a>
-		  <a href="{% url 'elibrary' %}">
-			<div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
-		  </a>
-		  <a href="{% url 'index' %}">
-			<div class="col-menu col-menu-last">الرئيسية</div>
-		  </a>
-		</div>
-	</div>
-	<div class="card card-map">
-		<div id="mapid" style="position: relative; height:100%; width:100%; z-index:1000"></div>
-		<div id="toolbar" style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:250px; height: 35px; display: block; ">
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='showHand()'><img src="{% static 'img/hand.png' %}" width="31px"/></a></div>
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomToExtent()'><img src="{% static 'img/lookup.png' %}" width="31px"/></a></div>
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomOutDraw()'><img src="{% static 'img/zoomout.png' %}" width="33px"/></a></div>
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomInDraw()'><img src="{% static 'img/zoomin.png' %}" width="31px"/></a></div>
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomOut()'><img src="{% static 'img/initialextent.png' %}" width="34px"/></a></div>
-			<div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='zoomIn()'><img src="{% static 'img/fullextent.png' %}" width="31px"/></a></div>
-			<div style="width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='edit()'><img src="{% static 'img/draw.png' %}" width="38px"/></a>
-				<div leaflet style="height: 0px;" [leafletOptions]="options">
-					<div *ngIf="shown" leafletDraw [leafletDrawOptions]="drawOptions"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-  </div>
-  <div class="rightcolumn">
-			<div class="card card-search">
-				<button class="search-icon" type="submit"><i></i></button>
-				<input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
-				<button class="search-button">البحث</button>
-			</div>
-			<div class="card card-adv-search">
-				<div class="fast-search"><a href="#" class="fast-search-link">بحث سريع</a></div>
-				<div class="reset">
-					<button class="search-icon" type="submit"><i></i></button>
-					<span class="search-span">بحث متقدم</span>
-					<a href="#" class="fast-search-link">إعادة ظبط</a>
-				</div>
-			</div>
-			<div class="card card-toc">
-				<table dir="rtl">
-					<tr>
-						<select class='select-dropdown'>
-						  <option value="-1">تحديد المكان</option>
-						  <option value="1">إدخال من الخريطة</option>
-						  <option value="2">تحميل shapefile</option>
-						</select>
-					</tr>
-					<tr>
-						<select class='select-dropdown'>
-						  <option value="-1">تحديد نوع السمك</option>
-						  <option value="1">بلطي</option>
-						  <option value="2">بوري</option>
-						  <option value="3">دنيس</option>
-						  <option value="4">لوط</option>
-						</select>
-					</tr>
-					<tr>
-						<select class='select-dropdown'>
-						  <option value="-1">تحديد مصدر المياه</option>
-						  <option value="1">بحار</option>
-						  <option value="2">بحيرات</option>
-						  <option value="3">ترع ومصارف</option>
-						  <option value="4">مياه جوفية</option>
-						  <option value="5">نهر النيل</option>
-						</select>
-					</tr>
-				</table>
-				
-				<table class="index-table" dir="rtl">
-					<tr>
-						<select class='select-dropdown'>
-							<option value="-1">تحديد مؤشرات جودة المياه</option>
-						</select>
-					</tr>
-					<tr>
-						<td class='quality-lbl'>pH</td>
-						<td>
-							<input type="range" min="0" max="100" value="50" class="slider" id="myRange1">
-						</td>
-						
-					</tr>
-					<tr><td></td></tr><tr><td></td></tr>
-					<tr>
-						<td class='quality-lbl'>Salinity</td>
-						<td>
-							<input type="range" min="0" max="100" value="50" class="slider" id="myRange2">
-						</td>
-						
-					</tr>
-					<tr><td></td></tr><tr><td></td></tr>
-					<tr>
-					<tr>
-						<td class='quality-lbl'>DO</td>
-						<td>
-							<input type="range" min="0" max="100" value="50" class="slider" id="myRange3">
-						</td>
-						
-					</tr>
-				</table>
-				<button class="button">عرض النتائج</button>
-			</div>
+    <div class="leftcolumn">
+        <div class="card card-menu">
+            <div class="row-menu">
+                <a href="{% url 'login' %}">
+                    <div class="col-menu col-menu-all">تسجيل الدخول</div>
+                </a>
+                <a href="{% url 'contactus' %}">
+                    <div class="col-menu col-menu-all">اتصل بنا</div>
+                </a>
+                <a href="{% url 'services' %}">
+                    <div class="col-menu col-menu-all">خدماتنا</div>
+                </a>
+                <a href="{% url 'elibrary' %}">
+                    <div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
+                </a>
+                <a href="{% url 'index' %}">
+                    <div class="col-menu col-menu-last">الرئيسية</div>
+                </a>
+            </div>
+        </div>
+        <div class="card card-map">
+            <div id="mapid" style="position: relative; height:100%; width:100%; z-index:1000"></div>
+            <div id="toolbar"
+                 style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:250px; height: 35px; display: block; ">
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='showHand()'><img src="{% static 'img/hand.png' %}" width="31px"/></a></div>
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='zoomToExtent()'><img src="{% static 'img/lookup.png' %}" width="31px"/></a></div>
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='zoomOutDraw()'><img src="{% static 'img/zoomout.png' %}" width="33px"/></a></div>
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='zoomInDraw()'><img src="{% static 'img/zoomin.png' %}" width="31px"/></a></div>
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='zoomOut()'><img src="{% static 'img/initialextent.png' %}" width="34px"/></a></div>
+                <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
+                        onclick='zoomIn()'><img src="{% static 'img/fullextent.png' %}" width="31px"/></a></div>
+                <div style="width: 35px; float: left; height: 100%; cursor: pointer;"><a onclick='edit()'><img
+                        src="{% static 'img/draw.png' %}" width="38px"/></a>
+                    <div leaflet style="height: 0px;" [leafletOptions]="options">
+                        <div *ngIf="shown" leafletDraw [leafletDrawOptions]="drawOptions"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightcolumn">
+        <div class="card card-search">
+            <button class="search-icon" type="submit"><i></i></button>
+            <input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
+            <button class="search-button">البحث</button>
+        </div>
+        <div class="card card-adv-search">
+            <div class="fast-search"><a href="#" class="fast-search-link">بحث سريع</a></div>
+            <div class="reset">
+                <button class="search-icon" type="submit"><i></i></button>
+                <span class="search-span">بحث متقدم</span>
+                <a href="#" class="fast-search-link">إعادة ظبط</a>
+            </div>
+        </div>
+        <div class="card card-toc">
+            <table dir="rtl">
+                <tr>
+                    <select class='select-dropdown'>
+                        <option value="-1">تحديد المكان</option>
+                        <option value="1">إدخال من الخريطة</option>
+                        <option value="2">تحميل shapefile</option>
+                    </select>
+                </tr>
+                <tr>
+                    <select class='select-dropdown'>
+                        <option value="-1">تحديد نوع السمك</option>
+                        <option value="1">بلطي</option>
+                        <option value="2">بوري</option>
+                        <option value="3">دنيس</option>
+                        <option value="4">لوط</option>
+                    </select>
+                </tr>
+                <tr>
+                    <select class='select-dropdown'>
+                        <option value="-1">تحديد مصدر المياه</option>
+                        <option value="1">بحار</option>
+                        <option value="2">بحيرات</option>
+                        <option value="3">ترع ومصارف</option>
+                        <option value="4">مياه جوفية</option>
+                        <option value="5">نهر النيل</option>
+                    </select>
+                </tr>
+            </table>
 
-	  		<div class="results">
-					<!-- <li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
-					<li><a href="#" onclick="load_results('FinalSuitabilityMapModel.png')">عرض نتيجة رقم 29</a></li>
-					<li><a href="#" onclick="load_results('FinalSuitabilityModel.png')">عرض نتيجة رقم 28</a></li>
-					<li><a href="#" onclick="load_results('SoilSubModel.png')">عرض نتيجة رقم 26</a></li>
-					<li><a href="#" onclick="load_results('SocioEconomic.png')">عرض نتيجة رقم 21</a></li>
-					<li><a href="#" onclick="load_results('WaterAvailabilitySubModel.png')">عرض نتيجة رقم 18</a></li>
-					<li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li> -->
-					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"  id="FinalSuitabilityMapModelReclassify"/><label style="float: left;">Final Suitability Map Model Reclassify</label><br />
-					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')"  id="FinalSuitabilityMapModel"/><label style="float: left;">Final Suitability Map Model</label><br />
-					<input type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')"  id="FinalSuitabilityModel"/><label style="float: left;">Final Suitability Model</label><br />
-					<input type="checkbox" onclick="checkbox_status('SoilSubModel')"  id="SoilSubModel"/><label style="float: left;">Soil Sub-Model</label><br />
-					<input type="checkbox" onclick="checkbox_status('SocioEconomic')"  id="SocioEconomic"/><label style="float: left;">Socio Economic</label><br />
-					<input type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"  id="WaterAvailabilitySubModel" /><label style="float: left;">Water Availability Sub-Model</label><br />
-					<input type="checkbox" onclick="checkbox_status('FinalRestrictionModel')"  id="FinalRestrictionModel" /><label style="float: left;">Final Restriction Model</label><br />
-			</div>
-  </div>
+            <table class="index-table" dir="rtl">
+                <tr>
+                    <select class='select-dropdown'>
+                        <option value="-1">تحديد مؤشرات جودة المياه</option>
+                    </select>
+                </tr>
+                <tr>
+                    <td class='quality-lbl'>pH</td>
+                    <td>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="myRange1">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class='quality-lbl'>Salinity</td>
+                    <td>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="myRange2">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                <tr>
+                    <td class='quality-lbl'>DO</td>
+                    <td>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="myRange3">
+                    </td>
+
+                </tr>
+            </table>
+            <button class="button" onclick="display_results();">عرض النتائج</button>
+        </div>
+
+        <div id="results_div" class="results">
+            <!-- <li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
+            <li><a href="#" onclick="load_results('FinalSuitabilityMapModel.png')">عرض نتيجة رقم 29</a></li>
+            <li><a href="#" onclick="load_results('FinalSuitabilityModel.png')">عرض نتيجة رقم 28</a></li>
+            <li><a href="#" onclick="load_results('SoilSubModel.png')">عرض نتيجة رقم 26</a></li>
+            <li><a href="#" onclick="load_results('SocioEconomic.png')">عرض نتيجة رقم 21</a></li>
+            <li><a href="#" onclick="load_results('WaterAvailabilitySubModel.png')">عرض نتيجة رقم 18</a></li>
+            <li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li> -->
+            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"
+                   id="FinalSuitabilityMapModelReclassify"/><label style="float: left;">Final Suitability Map Model
+            Reclassify</label><br/>
+            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
+                style="float: left;">Final Suitability Map Model</label><br/>
+            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
+                style="float: left;">Final Suitability Model</label><br/>
+            <input type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
+                style="float: left;">Soil Sub-Model</label><br/>
+            <input type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
+                style="float: left;">Socio Economic</label><br/>
+            <input type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
+                   id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
+            <input type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
+                style="float: left;">Final Restriction Model</label><br/>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -363,7 +393,7 @@ function load_results(id){
 	image = L.imageOverlay(imageUrl, imageBounds);
 	image.addTo(map);
 	image.bringToFront();
-	map.setView(new L.LatLng(-29.267099228998973, 24.31585495414143), 5);
+	map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8);
 	listOfImages.push(image);
 }
 
@@ -379,6 +409,17 @@ function remove_results(id){
     	}
 	});
 }
+
+function display_results(){
+	document.getElementById("results_div").style.display = 'block';
+	map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8);
+}
+
+function hide_results(){
+	document.getElementById("results_div").style.display = 'none';
+}
+
+window.onload=hide_results();
 </script>
 </body>
 </html>
