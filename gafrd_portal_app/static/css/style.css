@@ -173,8 +173,8 @@ a{
 .card-search { height:7%; background-color: rgb(42,42,44); }
 .card-adv-search  { height:10%; background-color: rgb(244,243,243);}
 .card-toc { height:70%; background-color: white; padding: 20px;}
-.fast-search { height:50%; background-color: rgb(244,243,243); width: 100%; direction: rtl;}
-.reset { height:50%; background-color: rgb(244,243,243); width: 100%;}
+.fast-search { height:50%; background-color: rgb(244,243,243); width: 100%; direction: rtl; padding-right: 15px;}
+.reset { height:50%; background-color: rgb(244,243,243); width: 100%; padding-left: 10px; padding-right: 10px;}
 .fast-search-link{color:rgb(136,10,15); text-decoration: none; cursor: pointer; font-weight: bold;}
 .search-span{float: right; margin-right: 5px; color: rgb(76,82,91);}
 

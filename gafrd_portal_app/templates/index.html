@@ -74,6 +74,9 @@
                     </div>
                 </div>
             </div>
+            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
+                <img id="legend_img_src" src="" alt="" width="200px;"/>
+            </div>
         </div>
     </div>
     <div class="rightcolumn">
@@ -87,10 +90,10 @@
             <div class="reset">
                 <button class="search-icon" type="submit"><i></i></button>
                 <span class="search-span">بحث متقدم</span>
-                <a href="#" class="fast-search-link">إعادة ظبط</a>
+                <a href="#" class="fast-search-link">إعادة ضبط</a>
             </div>
         </div>
-        <div class="card card-toc">
+        <div id="parameters_div" class="card card-toc">
             <table dir="rtl">
                 <tr>
                     <select class='select-dropdown'>
@@ -165,28 +168,24 @@
         </div>
 
         <div id="results_div" class="results">
-            <!-- <li><a href="#" onclick="load_results('FinalSuitabilityMapModelReclassify.png')">عرض نتيجة رقم 30</a></li>
-            <li><a href="#" onclick="load_results('FinalSuitabilityMapModel.png')">عرض نتيجة رقم 29</a></li>
-            <li><a href="#" onclick="load_results('FinalSuitabilityModel.png')">عرض نتيجة رقم 28</a></li>
-            <li><a href="#" onclick="load_results('SoilSubModel.png')">عرض نتيجة رقم 26</a></li>
-            <li><a href="#" onclick="load_results('SocioEconomic.png')">عرض نتيجة رقم 21</a></li>
-            <li><a href="#" onclick="load_results('WaterAvailabilitySubModel.png')">عرض نتيجة رقم 18</a></li>
-            <li><a href="#" onclick="load_results('FinalRestrictionModel.png')">عرض نتيجة رقم 13</a></li> -->
-            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"
+            <h2 style="padding-right: 40%;">نتائج البحث</h2>
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"
                    id="FinalSuitabilityMapModelReclassify"/><label style="float: left;">Final Suitability Map Model
             Reclassify</label><br/>
-            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
                 style="float: left;">Final Suitability Map Model</label><br/>
-            <input type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
                 style="float: left;">Final Suitability Model</label><br/>
-            <input type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
                 style="float: left;">Soil Sub-Model</label><br/>
-            <input type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
                 style="float: left;">Socio Economic</label><br/>
-            <input type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
                    id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
-            <input type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
                 style="float: left;">Final Restriction Model</label><br/>
+
+            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button" onclick="hide_results();">رجوع</button>
         </div>
     </div>
 </div>
@@ -202,6 +201,7 @@
 	var mapUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 	var image;
 	var listOfImages = [];
+	var listOfLegendImages = [];
 
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
@@ -384,6 +384,7 @@ function checkbox_status(id){
     	remove_results(id)
 	} else{
 		load_results(id);
+		load_legend_img(id);
 	}
 }
 
@@ -408,18 +409,57 @@ function remove_results(id){
     		}
     	}
 	});
+	remove_legend_img(id);
+}
+
+function load_legend_img(id){
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Legend/'+id+'.png';
+    listOfLegendImages.push(id);
+}
+
+function remove_legend_img(id){
+	listOfLegendImages.forEach(function(entry) {
+    	if(id === entry){
+    		var index = listOfLegendImages.indexOf(entry);
+    		if (index > -1) {
+    			listOfLegendImages.splice(index, 1);
+    		}
+    	}
+	});
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Legend/'+listOfLegendImages.at(-1)+'.png';
 }
 
 function display_results(){
 	document.getElementById("results_div").style.display = 'block';
+	document.getElementById("legend_div").style.display = 'block';
+	document.getElementById("parameters_div").style.display = 'none';
 	map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8);
 }
 
 function hide_results(){
 	document.getElementById("results_div").style.display = 'none';
+	document.getElementById("legend_div").style.display = 'none';
+	document.getElementById("parameters_div").style.display = 'block';
+
+	var result_checkboxes = document.getElementsByName('result_checkbox');
+    for (var checkbox of result_checkboxes) {
+        checkbox.checked = false;
+    }
+
+    listOfImages.forEach(function(entry) {
+    	map.removeLayer(entry);
+	});
+
+	document.getElementById("legend_img_src").src="";
+
+    listOfLegendImages=[];
+    listOfImages=[];
+
+	map.setView([27.3, 30.8], 6);
 }
 
 window.onload=hide_results();
+
 </script>
 </body>
 </html>
