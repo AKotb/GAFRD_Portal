@@ -169,11 +169,11 @@
 
         <div id="results_div" class="results">
             <h2 style="padding-right: 40%;">نتائج البحث</h2>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"
+            <!-- <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModelReclassify')"
                    id="FinalSuitabilityMapModelReclassify"/><label style="float: left;">Final Suitability Map Model
             Reclassify</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
-                style="float: left;">Final Suitability Map Model</label><br/>
+                style="float: left;">Final Suitability Map Model</label><br/> -->
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
                 style="float: left;">Final Suitability Model</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
@@ -389,12 +389,27 @@ function checkbox_status(id){
 }
 
 function load_results(id){
-	var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
-    var imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]];
+    var top_eg = 31.578858103
+    var left_eg = 30.0000002375
+    var right_eg = 32.0107141575
+    var bottom_eg = 30.6609431859
+
+    // Extent for South Africa Data
+    /*
+    var top_sa = -22.137060
+    var left_sa = 31.788092
+    var right_sa = 26.406370
+    var bottom_sa = -25.436225
+    */
+
+    var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
+    //var imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]]; // for south africa data
+    var imageBounds = [[top_eg, right_eg], [bottom_eg, left_eg]];
 	image = L.imageOverlay(imageUrl, imageBounds);
 	image.addTo(map);
 	image.bringToFront();
-	map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8);
+	//map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8); // for south africa data
+	map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9);
 	listOfImages.push(image);
 }
 
@@ -413,7 +428,7 @@ function remove_results(id){
 }
 
 function load_legend_img(id){
-    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Legend/'+id+'.png';
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/legend/'+id+'.png';
     listOfLegendImages.push(id);
 }
 
@@ -426,14 +441,15 @@ function remove_legend_img(id){
     		}
     	}
 	});
-    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Legend/'+listOfLegendImages.at(-1)+'.png';
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/legend/'+listOfLegendImages.at(-1)+'.png';
 }
 
 function display_results(){
 	document.getElementById("results_div").style.display = 'block';
 	document.getElementById("legend_div").style.display = 'block';
 	document.getElementById("parameters_div").style.display = 'none';
-	map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8);
+	//map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8); //for South Africa
+	map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9);
 }
 
 function hide_results(){

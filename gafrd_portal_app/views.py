@@ -42,8 +42,8 @@ def elibrary(request):
 def model_call(request):
     if request.method == 'POST' and 'run_module' in request.POST:
 
-        in_dir = r'D:\Work\GAFRD_Portal\Model_Data\inputs'
-        out_dir = r'D:\Work\GAFRD_Portal\Model_Data\outputs'
+        in_dir = r'D:\Work\GAFRD_Portal\Model_Data\inputs\Egypt'
+        out_dir = r'D:\Work\GAFRD_Portal\Model_Data\outputs\Egypt'
 
         ExecuteModel.run(in_dir, out_dir)
 
