@@ -8,4 +8,5 @@ urlpatterns = [
     path('services/', views.services, name='services'),
     path('elibrary/', views.elibrary, name='elibrary'),
     path('model_call/', views.model_call, name='model_call'),
+    path('run_clip_polygon/', views.run_clip_polygon, name='run_clip_polygon')
 ]

@@ -1,5 +1,6 @@
 import os
-from gafrd_portal_app import model_tools as mt
+from gafrd_portal_app.model_tools import TSModel
+
 
 
 class ExecuteModel:
@@ -25,7 +26,7 @@ class ExecuteModel:
             "I13": "WaterBodies.shp",
             "I14": "protectedareas.shp",
             "I15": "Perennialrivers5mBuffer.shp",
-            "I16": "LimpopoBoundary2.shp",
+            "I16": "StudyArea.shp",
         }
 
         for k in data_inputs.keys():
@@ -95,86 +96,94 @@ class ExecuteModel:
             "W28": (0.391, 0.087, 0.262, 0.217)
         }
 
+
         print("Run Tools 1, 2, & 3")
-        mt.TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
-        mt.TSModel.is_null(data_outputs["TO1"], data_outputs["TO2"])
-        mt.TSModel.clip_raster(data_outputs["TO2"], data_inputs["I16"], data_outputs["TO3"])
+        TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
+        TSModel.is_null(data_outputs["TO1"], data_outputs["TO2"])
+        TSModel.clip_raster(data_outputs["TO2"], data_inputs["I16"], data_outputs["TO3"])
 
         print("Run Tools 4, 5, & 6")
-        mt.TSModel.vector_to_raster(data_inputs["I13"], data_outputs["TO4"])
-        mt.TSModel.is_null(data_outputs["TO4"], data_outputs["TO5"])
-        mt.TSModel.clip_raster(data_outputs["TO5"], data_inputs["I16"], data_outputs["TO6"])
+        TSModel.vector_to_raster(data_inputs["I13"], data_outputs["TO4"])
+        TSModel.is_null(data_outputs["TO4"], data_outputs["TO5"])
+        TSModel.clip_raster(data_outputs["TO5"], data_inputs["I16"], data_outputs["TO6"])
 
         print("Run Tools 7, 8, & 9")
-        mt.TSModel.vector_to_raster(data_inputs["I14"], data_outputs["TO7"])
-        mt.TSModel.is_null(data_outputs["TO7"], data_outputs["TO8"])
-        mt.TSModel.clip_raster(data_outputs["TO8"], data_inputs["I16"], data_outputs["TO9"])
+        TSModel.vector_to_raster(data_inputs["I14"], data_outputs["TO7"])
+        TSModel.is_null(data_outputs["TO7"], data_outputs["TO8"])
+        TSModel.clip_raster(data_outputs["TO8"], data_inputs["I16"], data_outputs["TO9"])
 
         print("Run Tools 10, 11, & 12")
-        mt.TSModel.vector_to_raster(data_inputs["I15"], data_outputs["TO10"])
-        mt.TSModel.is_null(data_outputs["TO10"], data_outputs["TO11"])
-        mt.TSModel.clip_raster(data_outputs["TO11"], data_inputs["I16"], data_outputs["TO12"])
+        TSModel.vector_to_raster(data_inputs["I15"], data_outputs["TO10"])
+        TSModel.is_null(data_outputs["TO10"], data_outputs["TO11"])
+        TSModel.clip_raster(data_outputs["TO11"], data_inputs["I16"], data_outputs["TO12"])
 
         print("Run Tool 13")
-        mt.TSModel.raster_calc_mul(
+        TSModel.raster_calc_mul(
             [data_outputs["TO3"], data_outputs["TO6"], data_outputs["TO9"], data_outputs["TO12"]],
             data_outputs["TO13"])
 
         print("Run Tools 14, 15, 16, & 17")
-        mt.TSModel.raster_reclassify(data_inputs["I2"], reclassify_list["R14"], data_outputs["TO14"])
-        mt.TSModel.raster_reclassify(data_inputs["I3"], reclassify_list["R15"], data_outputs["TO15"])
-        mt.TSModel.raster_reclassify(data_inputs["I4"], reclassify_list["R16"], data_outputs["TO16"])
-        mt.TSModel.raster_reclassify(data_inputs["I5"], reclassify_list["R17"], data_outputs["TO17"])
+        TSModel.raster_reclassify(data_inputs["I2"], reclassify_list["R14"], data_outputs["TO14"])
+        TSModel.raster_reclassify(data_inputs["I3"], reclassify_list["R15"], data_outputs["TO15"])
+        TSModel.raster_reclassify(data_inputs["I4"], reclassify_list["R16"], data_outputs["TO16"])
+        TSModel.raster_reclassify(data_inputs["I5"], reclassify_list["R17"], data_outputs["TO17"])
 
         print("Run Tool 18")
-        mt.TSModel.raster_calc_add(
+        TSModel.raster_calc_add(
             [data_outputs["TO14"], data_outputs["TO15"], data_outputs["TO16"], data_outputs["TO17"]],
             weight_list["W18"],
             data_outputs["TO18"])
 
         print("Run Tools 19 & 20")
-        mt.TSModel.raster_reclassify(data_inputs["I6"], reclassify_list["R19"], data_outputs["TO19"])
-        mt.TSModel.raster_reclassify(data_inputs["I7"], reclassify_list["R20"], data_outputs["TO20"])
+        TSModel.raster_reclassify(data_inputs["I6"], reclassify_list["R19"], data_outputs["TO19"])
+        TSModel.raster_reclassify(data_inputs["I7"], reclassify_list["R20"], data_outputs["TO20"])
 
         print("Run Tool 21")
-        mt.TSModel.raster_calc_add([data_outputs["TO19"], data_outputs["TO20"]],
+        TSModel.raster_calc_add([data_outputs["TO19"], data_outputs["TO20"]],
                                    weight_list["W21"],
                                    data_outputs["TO21"])
 
         print("Run Tools 22, 23, 24, & 25")
-        mt.TSModel.raster_reclassify(data_inputs["I8"], reclassify_list["R22"], data_outputs["TO22"])
-        mt.TSModel.raster_reclassify(data_inputs["I9"], reclassify_list["R23"], data_outputs["TO23"])
-        mt.TSModel.raster_reclassify(data_inputs["I10"], reclassify_list["R24"], data_outputs["TO24"])
-        mt.TSModel.raster_reclassify(data_inputs["I11"], reclassify_list["R25"], data_outputs["TO25"])
+        TSModel.raster_reclassify(data_inputs["I8"], reclassify_list["R22"], data_outputs["TO22"])
+        TSModel.raster_reclassify(data_inputs["I9"], reclassify_list["R23"], data_outputs["TO23"])
+        TSModel.raster_reclassify(data_inputs["I10"], reclassify_list["R24"], data_outputs["TO24"])
+        TSModel.raster_reclassify(data_inputs["I11"], reclassify_list["R25"], data_outputs["TO25"])
 
         print("Run Tool 26")
-        mt.TSModel.raster_calc_add(
+        TSModel.raster_calc_add(
             [data_outputs["TO22"], data_outputs["TO23"], data_outputs["TO24"], data_outputs["TO25"]],
             weight_list["W26"],
             data_outputs["TO26"])
 
         print("Run Tool 27")
-        mt.TSModel.raster_reclassify(data_inputs["I1"], reclassify_list["R27"], data_outputs["TO27"])
+        TSModel.raster_reclassify(data_inputs["I1"], reclassify_list["R27"], data_outputs["TO27"])
 
         print("Run Tool 28")
-        mt.TSModel.raster_calc_add(
+        TSModel.raster_calc_add(
             [data_outputs["TO18"], data_outputs["TO21"], data_outputs["TO26"], data_outputs["TO27"]],
             weight_list["W28"],
             data_outputs["TO28"])
 
         print("Run Tool 29")
-        mt.TSModel.raster_calc_mul([data_outputs["TO13"], data_outputs["TO28"]],
+        TSModel.raster_calc_mul([data_outputs["TO13"], data_outputs["TO28"]],
                                    data_outputs["TO29"])
 
         print("Run Tool 30")
-        mt.TSModel.raster_reclassify(data_outputs["TO29"], reclassify_list["R30"], data_outputs["TO30"])
+        TSModel.raster_reclassify(data_outputs["TO29"], reclassify_list["R30"], data_outputs["TO30"])
 
         print("Model Run is finished.")
+
 
 
 # #################################################
 # try to run locally -- comment it at runtime #####
 # #################################################
-#in_dir = r'D:\NARSS\GAFRD_Portal\Model\TS Model Code and Data\model_data_path'
-#out_dir = r'D:\NARSS\GAFRD_Portal\Model\TS Model Code and Data\model_data_path\outputs'
-#ExecuteModel.run(in_dir, out_dir)
+in_dir = r'F:\NARSS\Fishers_Project\Data_GAFRD\LatLon\inputs'
+out_dir = r'F:\NARSS\Fishers_Project\Data_GAFRD\LatLon\outputs'
+
+
+
+# polygonRequest = [[31.01, 31.0], [31.2, 31.0], [31.2, 31.3]]
+# polygonRequestDir = r'D:\Work\NARSS\Tharwa Samakia Project\data-2021-12-18\LatLon\outputs\polygons'
+# polygonRequestName = "poly1"
+# ExecuteModel.run(in_dir, out_dir)

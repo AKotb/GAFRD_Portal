@@ -1,8 +1,11 @@
+import os.path
+
 from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
 from gafrd_portal_app.run import ExecuteModel
+from gafrd_portal_app.model_tools import TSModel
 
 def index(request):
     """View function for home page of site."""
@@ -42,10 +45,33 @@ def elibrary(request):
 def model_call(request):
     if request.method == 'POST' and 'run_module' in request.POST:
 
-        in_dir = r'D:\Work\GAFRD_Portal\Model_Data\inputs\Egypt'
-        out_dir = r'D:\Work\GAFRD_Portal\Model_Data\outputs\Egypt'
+        in_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\inputs\Egypt'
+        out_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\outputs\Egypt'
 
         ExecuteModel.run(in_dir, out_dir)
 
         # return user to required page
         return render(request, 'contact_us.html')
+
+
+def run_clip_polygon(request):
+    if request.is_ajax and request.method == "POST":
+
+        out_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\outputs\Egypt'
+        ststic_path = r'F:\NARSS\Fishers_Project\GAFRD_Portal\gafrd_portal_app\static'
+        model_final_out = "FinalSuitabilityMapModelReclassify.tif"
+        model_final_out_path = os.path.join(out_dir, model_final_out)
+        polygonRequestDir = os.path.join(ststic_path, "polygons")
+        polygonRequest = request.POST.get('polygonCoordinates')
+        print("polygonRequest: ", polygonRequest)
+        print("Type before is ", len(polygonRequest))
+        for x in range(len(polygonRequest)):
+            print('x = ', polygonRequest[x])
+        polygonRequest = eval(polygonRequest)
+        print("Type is ", type(polygonRequest))
+        polygonRequestName = request.POST.get('name')
+        print("polygonRequestName: ", polygonRequestName)
+        TSModel.clip_using_polygon(model_final_out_path, polygonRequest, polygonRequestDir, polygonRequestName)
+
+        # return user to required page
+        return render(request, 'index.html')

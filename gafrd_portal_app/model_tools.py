@@ -1,13 +1,14 @@
-from osgeo import ogr
+from osgeo import ogr, osr
 from osgeo import gdal
 import numpy as np
+from PIL import Image
 import os
 
 
 class TSModel:
 
     @staticmethod
-    def vector_to_raster(in_shp, out_raster, pixel_size=180, burn_value=1):
+    def vector_to_raster(in_shp, out_raster, pixel_size=0.001, burn_value=1):
         """
         Vector to Raster process found in tools:
             [1, 4, 7, 10]
@@ -21,7 +22,7 @@ class TSModel:
         '''
         input_shp = ogr.Open(in_shp)
         shp_layer = input_shp.GetLayer()
-    
+
         xmin, xmax, ymin, ymax = shp_layer.GetExtent()
         ds = gdal.Rasterize(out_raster, in_shp, xRes=pixel_size, yRes=pixel_size,
                             burnValues=burn_value, outputBounds=[xmin, ymin, xmax, ymax],
@@ -76,11 +77,11 @@ class TSModel:
         print('inside is null: ndv = ', ndv)
         if ndv is None:
             ndv = 10000
-            #print('\tinside is null: ndv becomes 10000')
-        #else:
-            #print('NDV is equals: ', ndv)
+            # print('\tinside is null: ndv becomes 10000')
+        # else:
+        # print('NDV is equals: ', ndv)
         band_arr = band.ReadAsArray()
-        #print('inside is null: \n\tinput unique values = ', np.unique(band_arr))
+        # print('inside is null: \n\tinput unique values = ', np.unique(band_arr))
         # band_arr[band_arr == ndv] = 1.0
         # band_arr[band_arr != ndv] = 0.0
         band_arr = 0.0001 * band_arr
@@ -91,7 +92,7 @@ class TSModel:
         outdata.SetProjection(ds.GetProjection())  ##sets same projection as input
         outdata.GetRasterBand(1).WriteArray(band_arr)
         outdata.GetRasterBand(1).SetNoDataValue(ndv)  ##if you want these values transparent
-        #print('inside is null: \n\toutput unique values = ', np.unique(band_arr))
+        # print('inside is null: \n\toutput unique values = ', np.unique(band_arr))
         outdata.FlushCache()  ##saves to disk!!
         outdata = None
 
@@ -112,8 +113,8 @@ class TSModel:
         OutTile = gdal.Warp(out_clipped_ras, in_ras, cutlineDSName=in_clipper, cropToCutline=True, dstNodata=nan_value)
         OutTile = None
         temp = gdal.Open(out_clipped_ras)
-        cols, rows = temp.RasterXSize, temp.RasterYSize
-        #print('inside clip: out clipped: \n{} \ndims: cols = {}, rows = {}'.format(out_clipped_ras, cols, rows))
+        # cols, rows = temp.RasterXSize, temp.RasterYSize
+        # print('inside clip: out clipped: \n{} \ndims: cols = {}, rows = {}'.format(out_clipped_ras, cols, rows))
 
     @staticmethod
     def raster_calc_mul(input_list, output_raster):
@@ -139,7 +140,7 @@ class TSModel:
         ds1 = gdal.Open(input1)
         band1 = ds1.GetRasterBand(1)
         ndv1 = band1.GetNoDataValue()
-        #print('inside rasCalcMul: \n\t NDV1 = ', ndv1)
+        # print('inside rasCalcMul: \n\t NDV1 = ', ndv1)
         band_arr1 = band1.ReadAsArray()
         b1 = np.where(band_arr1 == 10000.0)
         band_arr1[band_arr1 == ndv1] = nan_value
@@ -158,7 +159,7 @@ class TSModel:
         ds2 = gdal.Open(input2)
         band2 = ds2.GetRasterBand(1)
         ndv2 = band2.GetNoDataValue()
-        #print('inside rasCalcMul: \n\t NDV2 = ', ndv2)
+        # print('inside rasCalcMul: \n\t NDV2 = ', ndv2)
         band_arr2 = band2.ReadAsArray()
         b2 = np.where(band_arr2 == 10000.0)
         band_arr2[band_arr2 == ndv2] = nan_value
@@ -186,7 +187,7 @@ class TSModel:
 
             # print('Again ... ', np.unique(band_arr_all))
 
-            #print('inside raster_calc_mul: \n\tdims of calculated matrix: \n\t', band_arr_all.shape)
+            # print('inside raster_calc_mul: \n\tdims of calculated matrix: \n\t', band_arr_all.shape)
             band_arr_all[b1] = nan_value
             band_arr_all[b2] = nan_value
 
@@ -198,7 +199,7 @@ class TSModel:
             ds3 = gdal.Open(input3)
             band3 = ds3.GetRasterBand(1)
             ndv3 = band3.GetNoDataValue()
-            #print('inside rasCalcMul: \n\t NDV3 = ', ndv3)
+            # print('inside rasCalcMul: \n\t NDV3 = ', ndv3)
             band_arr3 = band3.ReadAsArray()
             band_arr3[band_arr3 == ndv3] = nan_value
             cols3 = ds3.RasterXSize
@@ -208,7 +209,7 @@ class TSModel:
             ds4 = gdal.Open(input4)
             band4 = ds4.GetRasterBand(1)
             ndv4 = band4.GetNoDataValue()
-            #print('inside rasCalcMul: \n\t NDV4 = ', ndv4)
+            # print('inside rasCalcMul: \n\t NDV4 = ', ndv4)
             band_arr4 = band4.ReadAsArray()
             band_arr4[band_arr4 == ndv4] = nan_value
             cols4 = ds4.RasterXSize
@@ -222,13 +223,13 @@ class TSModel:
             band_arr4 = band_arr4[:min_rows, :min_cols]
             # band_arr_all = 1.0 * band_arr1 * band_arr2 * band_arr3 * band_arr4
             band_arr_all = 0.25 * (band_arr1 + band_arr2 + band_arr3 + band_arr4)
-            #print(np.unique(band_arr_all))
+            # print(np.unique(band_arr_all))
             band_arr_all[np.where(band_arr_all < 1.0)] = 0
             band_arr_all[np.where(band_arr_all == 1.0)] = 1
             band_arr_all[np.where(band_arr_all > 1.0)] = 10000
-            #print('Again ... ', np.unique(band_arr_all))
+            # print('Again ... ', np.unique(band_arr_all))
 
-            #print('inside raster_calc_mul: \n\tdims of calculated matrix: \n\t', band_arr_all.shape)
+            # print('inside raster_calc_mul: \n\tdims of calculated matrix: \n\t', band_arr_all.shape)
             band_arr_all[band_arr_all == nan_value] = ndv1
             driver = gdal.GetDriverByName("GTiff")
             outdata = driver.Create(output_raster, band_arr1.shape[1], band_arr1.shape[0], 1, gdal.GDT_UInt16)
@@ -240,7 +241,7 @@ class TSModel:
         outdata.GetRasterBand(1).SetNoDataValue(ndv1)  ##if you want these values transparent
         outdata.FlushCache()  ##saves to disk!!
         outdata = None
-        #print(output_raster)
+        # print(output_raster)
         ds1 = None
         ds2 = None
         ds3 = None
@@ -280,9 +281,9 @@ class TSModel:
         band1 = ds1.GetRasterBand(1)
         ndv1 = band1.GetNoDataValue()
         band_arr1 = band1.ReadAsArray()
-        #print('band 1: ', np.unique(band_arr1))
+        # print('band 1: ', np.unique(band_arr1))
         b1 = np.where(band_arr1 == 10000.0)
-        #print(b1)
+        # print(b1)
         # band_arr1[band_arr1 == ndv1] = nan_value
         transform = ds1.GetGeoTransform()
         pixelWidth = transform[1]
@@ -299,9 +300,9 @@ class TSModel:
         band2 = ds2.GetRasterBand(1)
         ndv2 = band2.GetNoDataValue()
         band_arr2 = band2.ReadAsArray()
-        #print('band 2: ', np.unique(band_arr2))
+        # print('band 2: ', np.unique(band_arr2))
         b2 = np.where(band_arr2 == 10000.0)
-        #print(b2)
+        # print(b2)
         # band_arr2[band_arr2 == ndv2] = nan_value
         transform = ds2.GetGeoTransform()
         pixelWidth = transform[1]
@@ -320,10 +321,10 @@ class TSModel:
             band_arr2 = band_arr2[:min_rows, :min_cols]
 
             band_arr_all = (weight1 * band_arr1) + (weight2 * band_arr2)
-            #print("Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
+            # print("Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
             band_arr_all[b1] = 10000
             band_arr_all[b2] = 10000
-            #print("Again: Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
+            # print("Again: Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
             # band_arr_all[band_arr_all == nan_value] = ndv1
         else:
             input3 = input_list[2]
@@ -332,9 +333,9 @@ class TSModel:
             band3 = ds3.GetRasterBand(1)
             ndv3 = band3.GetNoDataValue()
             band_arr3 = band3.ReadAsArray()
-            #print('band 3: ', np.unique(band_arr3))
+            # print('band 3: ', np.unique(band_arr3))
             b3 = np.where(band_arr3 == 10000.0)
-            #print(b3)
+            # print(b3)
             # band_arr3[band_arr3 == ndv3] = nan_value
 
             input4 = input_list[3]
@@ -343,18 +344,18 @@ class TSModel:
             band4 = ds4.GetRasterBand(1)
             ndv4 = band4.GetNoDataValue()
             band_arr4 = band4.ReadAsArray()
-            #print('band 4: ', np.unique(band_arr4))
+            # print('band 4: ', np.unique(band_arr4))
             b4 = np.where(band_arr4 == 10000.0)
-            #print(b4)
+            # print(b4)
             # band_arr4[band_arr4 == ndv4] = nan_value
 
             band_arr_all = (weight1 * band_arr1) + (weight2 * band_arr2) + (weight3 * band_arr3) + (weight4 * band_arr4)
-            #print("Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
+            # print("Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
             band_arr_all[b1] = 10000
             band_arr_all[b2] = 10000
             band_arr_all[b3] = 10000
             band_arr_all[b4] = 10000
-            #print("Again: Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
+            # print("Again: Unique Values inside rasCalcAdd: ", np.unique(band_arr_all))
             # band_arr_all[band_arr_all == nan_value] = ndv1
 
         driver = gdal.GetDriverByName("GTiff")
@@ -366,7 +367,7 @@ class TSModel:
         outdata.GetRasterBand(1).SetNoDataValue(nan_value)  ##if you want these values transparent
         outdata.FlushCache()  ##saves to disk!!
         outdata = None
-        #print(output_raster)
+        # print(output_raster)
         ds1 = None
         ds2 = None
         ds3 = None
@@ -400,7 +401,7 @@ class TSModel:
         nan_value = 10000
 
         t = {len(x) for x in reclassify_list}
-        #print(t)
+        # print(t)
         if len(t) != 1:
             print("Tool must contains tuples of 3 values (start, end, target)")
             return -1
@@ -408,24 +409,24 @@ class TSModel:
             print("All tuples of Tool must be 3 values (start, end, target)")
             return
 
-        #print('Good Tool ...')
+        # print('Good Tool ...')
 
         ds = gdal.Open(input_raster)
         band = ds.GetRasterBand(1)
         ndv = band.GetNoDataValue()
-        #print('ndv: ', ndv)
+        # print('ndv: ', ndv)
         if ndv == None:
-            #print('There is no data value')
+            # print('There is no data value')
             ndv = nan_value
         band_arr = band.ReadAsArray()
 
-        #print('Starting reclassify pixels ...')
+        # print('Starting reclassify pixels ...')
         for entry in reclassify_list:
             band_arr[np.where((entry[0] <= band_arr) & (band_arr <= entry[1]))] = entry[2]
 
         band_arr[np.where((ndv <= band_arr) & (band_arr <= ndv))] = nan_value
 
-        #print('End of reclassify.')
+        # print('End of reclassify.')
 
         driver = gdal.GetDriverByName("GTiff")
         outdata = driver.Create(output_raster, band_arr.shape[1], band_arr.shape[0], 1, gdal.GDT_UInt16)
@@ -437,5 +438,112 @@ class TSModel:
         outdata.GetRasterBand(1).SetNoDataValue(nan_value)  ##if you want these values transparent
         outdata.FlushCache()  ##saves to disk!!
         outdata = None
-        #print(output_raster)
+        # print(output_raster)
         ds = None
+
+    @staticmethod
+    def clip_using_polygon(in_ras, in_clipper, area_clipped_dir, area_clipped_name):
+        """
+        Clip model ouput raster using list of coordinates come from request.
+
+        :param in_ras: Raster tif file.
+        :param in_clipper: List of coordinates.
+        :param area_clipped_dir: A fullpath for clipped area tif file.
+        :param out_clipped_ras: A filename for clipped area - shp for boundary and tif for data.
+        """
+
+        nan_value = -3.4028230607370965e+38  # 2**16 - 1
+        nan_value = 10000
+
+        # set up the shapefile driver
+        driver = ogr.GetDriverByName("ESRI Shapefile")
+
+        # create the data source
+        data_source = driver.CreateDataSource(area_clipped_dir)
+
+        # create the spatial reference, WGS84
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+
+        # create the layer
+        layer = data_source.CreateLayer(area_clipped_name, srs, ogr.wkbPolygon)
+
+        ring = ogr.Geometry(ogr.wkbLinearRing)
+        # add first point as last point where Points of LinearRing must form a closed linestring
+        in_clipper.append(in_clipper[0])
+        for lat, lon in in_clipper:
+            ring.AddPoint(lon, lat)
+
+        # Create polygon
+        poly = ogr.Geometry(ogr.wkbPolygon)
+        poly.AddGeometry(ring)
+
+        # create the feature
+        feature = ogr.Feature(layer.GetLayerDefn())
+        feature.SetGeometry(poly)
+        boundingBox = feature.GetGeometryRef().GetEnvelope()
+        # Create the feature in the layer (shapefile)
+        layer.CreateFeature(feature)
+        # Dereference the feature
+        feature = None
+
+        # Save and close the data source
+        data_source = None
+
+        OutTile = gdal.Warp("{}/{}.tif".format(area_clipped_dir, area_clipped_name),
+                            in_ras, cutlineDSName="{}/{}.shp".format(area_clipped_dir, area_clipped_name),
+                            cropToCutline=True, dstNodata=nan_value)
+        OutTile = None
+
+        temp = gdal.Open("{}/{}.tif".format(area_clipped_dir, area_clipped_name))
+        cols, rows = temp.RasterXSize, temp.RasterYSize
+        print('inside clip: out clipped: \n{} \ndims: cols = {}, rows = {}'.format(area_clipped_name, cols, rows))
+        band = temp.GetRasterBand(1)
+        bmin, bmax = band.ComputeRasterMinMax(1)
+        print(bmin, bmax)
+        band_arr = band.ReadAsArray()
+        print(nan_value)
+        print(band_arr.shape)
+        print(np.min(band_arr), np.max(band_arr))
+        # scale ascending
+        scaled = 255 * (band_arr - bmin) / (bmax - bmin)
+        #print(np.min(scaled), np.max(scaled))
+        scaled[np.where(scaled > 255)] = 255
+        scaled[np.where(scaled < 0)] = 0
+        scaled = scaled.astype(int)
+        #print(np.min(scaled), np.max(scaled))
+        scaled2 = 255 - scaled
+        #print(np.min(scaled2), np.max(scaled2))
+        #print(scaled[25, 57], scaled2[25, 57])
+        scaled3 = 0 * scaled
+        scaled4 = 255 + scaled3
+        scaled4[np.where(band_arr == nan_value)] = 0
+        img = scaled
+
+        img = np.zeros((scaled.shape[0], scaled.shape[1], 4), dtype=np.uint8)
+        img[:, :, 0] = scaled
+        img[:, :, 1] = scaled2
+        img[:, :, 2] = scaled3
+        img[:, :, 3] = scaled4
+        print(scaled2.shape, img.shape)
+        imgFile = Image.fromarray(img)
+        imgFile.save("{}/{}.png".format(area_clipped_dir, area_clipped_name))
+
+        imgLeg = np.zeros([100, 257 - 1, 3], dtype=np.uint8)
+        for n in range(257 - 1):
+            imgLeg[:, n] = [255 - n, n, 0]
+        imgLegFile = Image.fromarray(imgLeg)
+        imgLegFile.save("{}/{}-legend.jpg".format(area_clipped_dir, area_clipped_name))
+
+        txtInfo = open("{}/{}-info.txt".format(area_clipped_dir, area_clipped_name), "w+")
+        txtInfo.write("name:{}\n".format(area_clipped_name))
+        txtInfo.write("minValue:{}\n".format(bmin))
+        txtInfo.write("maxValue:{}\n".format(bmax))
+        txtInfo.write("bottom:{}\n".format(boundingBox[0]))
+        txtInfo.write("top:{}\n".format(boundingBox[1]))
+        txtInfo.write("left:{}\n".format(boundingBox[2]))
+        txtInfo.write("right:{}\n".format(boundingBox[3]))
+
+
+
+
