@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('gafrd_portal_app/', include('gafrd_portal_app.urls')),
     path('', RedirectView.as_view(url='gafrd_portal_app/', permanent=True)),
+    path(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.png')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -132,18 +132,3 @@ class ExecuteModel:
         TSModel.raster_reclassify(data_outputs["TO29"], reclassify_list["R30"], data_outputs["TO30"])
 
         print("Model Run is finished.")
-
-
-
-# #################################################
-# try to run locally -- comment it at runtime #####
-# #################################################
-in_dir = r'F:\NARSS\Fishers_Project\Data_GAFRD\LatLon\inputs'
-out_dir = r'F:\NARSS\Fishers_Project\Data_GAFRD\LatLon\outputs'
-
-
-
-# polygonRequest = [[31.01, 31.0], [31.2, 31.0], [31.2, 31.3]]
-# polygonRequestDir = r'D:\Work\NARSS\Tharwa Samakia Project\data-2021-12-18\LatLon\outputs\polygons'
-# polygonRequestName = "poly1"
-# ExecuteModel.run(in_dir, out_dir)

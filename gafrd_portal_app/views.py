@@ -44,9 +44,9 @@ def elibrary(request):
 
 def model_call(request):
     if request.method == 'POST' and 'run_module' in request.POST:
-
-        in_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\inputs\Egypt'
-        out_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\outputs\Egypt'
+        current_dir = os.path.dirname(__file__)
+        in_dir = os.path.join(current_dir, 'static/Model_Data/inputs/Egypt')
+        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
 
         ExecuteModel.run(in_dir, out_dir)
 
@@ -56,9 +56,9 @@ def model_call(request):
 
 def run_clip_polygon(request):
     if request.is_ajax and request.method == "POST":
-
-        out_dir = r'F:\NARSS\Fishers_Project\GAFRD_Portal\Model_Data\outputs\Egypt'
-        ststic_path = r'F:\NARSS\Fishers_Project\GAFRD_Portal\gafrd_portal_app\static'
+        current_dir = os.path.dirname(__file__)
+        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
+        ststic_path = os.path.join(current_dir, 'static')
         model_final_out = "FinalSuitabilityMapModelReclassify.tif"
         model_final_out_path = os.path.join(out_dir, model_final_out)
         polygonRequestDir = os.path.join(ststic_path, "polygons")
