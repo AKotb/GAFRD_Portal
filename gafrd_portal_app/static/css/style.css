@@ -597,7 +597,7 @@ a:active {
 .caret {
   cursor: pointer;
   user-select: none; /* Prevent text selection */
-  margine-left: 5px;
+  margin-left: 5px;
 }
 
 /* Create the caret/arrow with a unicode, and style it */
