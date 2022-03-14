@@ -9,93 +9,53 @@ class ExecuteModel:
     def run(data_inputs_path, data_outputs_path):
 
         # Define all main inputs to tools as Inputs (In), where n from 1 to 16
-        data_inputs = {
-            "I1": "Temprature.tif",  # True
-            "I2": "DistanceToWaterBody.tif",  # False
-            "I3": "PerennialRiverDensity.tif",  # True
-            "I4": "DistanceToRiver.tif",  # True
-            "I5": "rainfallAnn.tif",  # True
-            "I6": "RoadDensity.tif",  # True
-            "I7": "DistanceToRoad.tif",  # True
-            "I8": "SOM.tif",  # True
-            "I9": "claypercent.tif",  # True
-            "I10": "soilpH.tif",
-            "I11": "Slope.tif",
-
-            "I12": "RoadsBuffer.shp",
-            "I13": "WaterBodies.shp",
-            "I14": "protectedareas.shp",
-            "I15": "Perennialrivers5mBuffer.shp",
-            "I16": "StudyArea.shp",
+        #--------------------------------------------------------------------
+        model_info_files = {
+            "data_inputs": "data_inputs.csv",
+            "data_outputs": "data_outputs.csv",
+            "reclassify_list": "reclassify_list.csv",
+            "weight_list": "weight_list.csv",
         }
+        for k in model_info_files.keys():
+            model_info_files[k] = os.path.join(data_inputs_path, "model_info_files", model_info_files[k])
 
-        for k in data_inputs.keys():
-            data_inputs[k] = os.path.join(data_inputs_path, data_inputs[k])
+        # Define all main inputs to tools as Inputs (In), where n from 1 to 16
+        data_inputs = {}
+
+        f = open(model_info_files["data_inputs"], "r")
+        for line in f.readlines()[1:]:
+            lineSplit = line.rstrip("\n").split(",")
+            data_inputs["I{}".format(lineSplit[0])] = "{}\\{}.{}".format(data_inputs_path, lineSplit[1], lineSplit[2])
+        f.close()
 
         # Define all outputs from tools as Tool Output (TOn), where n from 1 to 30
-        data_outputs = {
-            "TO1": "RoadsBufferRaster.tif",
-            "TO2": "RoadsBufferRasterIsNull.tif",
-            "TO3": "RoadsBufferRestriction.tif",
-            "TO4": "WaterBodiesRaster.tif",
-            "TO5": "WaterBodiesRasterIsNull.tif",
-            "TO6": "WaterBodiesRestriction.tif",
-            "TO7": "protectedareasRaster.tif",
-            "TO8": "protectedareasRasterIsNull.tif",
-            "TO9": "protectedareasRestriction.tif",
-            "TO10": "Perennialrivers5mBufferRaster.tif",
-            "TO11": "Perennialrivers5mBufferRasterIsNull.tif",
-            "TO12": "Perennialrivers5mBufferRestriction.tif",
-            "TO13": "FinalRestrictionModel.tif",
-            "TO14": "DistanceToWaterBodyReclassify.tif",
-            "TO15": "PerennialRiverDensityReclassify.tif",
-            "TO16": "DistanceToRiverReclassify.tif",
-            "TO17": "rainfallAnnReclassify.tif",
-            "TO18": "WaterAvailabilitySubModel.tif",
-            "TO19": "RoadDensityReclassify.tif",
-            "TO20": "DistanceToRoadReclassify.tif",
-            "TO21": "SocioEconomic.tif",
-            "TO22": "SOMReclassify.tif",
-            "TO23": "claypercentReclassify.tif",
-            "TO24": "soilpHReclassify.tif",
-            "TO25": "SlopeReclassify.tif",
-            "TO26": "SoilSubModel.tif",
-            "TO27": "TempratureReclassify.tif",
-            "TO28": "FinalSuitabilityModel.tif",
-            "TO29": "FinalSuitabilityMapModel.tif",
-            "TO30": "FinalSuitabilityMapModelReclassify.tif"
-        }
+        data_outputs = {}
 
-        for k in data_outputs.keys():
-            data_outputs[k] = os.path.join(data_outputs_path, data_outputs[k])
+        f = open(model_info_files["data_outputs"], "r")
+        for line in f.readlines()[1:]:
+            lineSplit = line.rstrip("\n").split(",")
+            data_outputs["TO{}".format(lineSplit[0])] = "{}\\{}.{}".format(data_outputs_path, lineSplit[1], lineSplit[2])
 
         # Define all reclassify lists used in tools as Rn,
         # where n in [14, 15, 16, 17, 19, 20, 22, 23, 24, 25, 27, 30]
-        reclassify_list = {
-            "R14": [(0, 1000, 4), (1000, 2500, 3), (2500, 3500, 2), (3500, 100000, 1)],
-            "R15": [(0.35, 1, 4), (0, 0.02, 1), (0.02, 0.2, 2), (0.2, 0.35, 3)],
-            "R16": [(0, 20, 1), (20, 1000, 4), (1000, 2500, 3), (2500, 3500, 2), (3500, 100000, 1)],
-            "R17": [(0, 200, 1), (200, 300, 1), (300, 700, 2), (700, 1000, 3), (1000, 3000, 4)],
-            "R19": [(0.35, 1, 4), (0, 0.04, 1), (0.04, 0.2, 2), (0.2, 0.35, 3)],
-            "R20": [(0, 5000, 4), (5000, 10000, 3), (10000, 15000, 2), (15000, 100000, 1)],
-            "R22": [(0, 1, 1000), (1, 1.5, 2000), (1.5, 2.5, 4000), (2.5, 18, 3000), (18, 100, 1000),
-                    (1000, 1000, 1), (2000, 2000, 2), (4000, 4000, 4), (3000, 3000, 3)],
-            "R23": [(0, 20, 1), (20, 40, 2), (40, 60, 3), (60, 100, 4)],
-            "R24": [(1, 4, 1), (4, 5.5, 2), (5.5, 6.5, 3), (6.5, 8.5, 4)],
-            "R25": [(0, 3, 1), (3, 6, 3), (0.999, 1, 4), (6, 9, 2), (9, 242.17, 1)],
-            "R27": [(0, 18, 1), (18, 22, 2), (22, 25, 3), (25, 36, 4), (36, 50, 1)],
-            "R30": [(0, 0, 99), (0, 1, 100), (1, 2, 200), (2, 3, 300), (3, 4, 400),
-                    (99, 99, 0), (100, 100, 1), (200, 200, 2), (300, 300, 3), (400, 400, 4)]
-        }
+        reclassify_list = {}
+
+        f = open(model_info_files["reclassify_list"], "r")
+        for line in f.readlines()[1:]:
+            lineSplit = line.rstrip("\n").rstrip(",").split(",")
+            entries = int((len(lineSplit) - 1) / 3)
+            reclassify_list["R{}".format(lineSplit[0])] = [
+                [float(lineSplit[3 * x + 1]), float(lineSplit[3 * x + 2]), float(lineSplit[3 * x + 3])]
+                for x in range(entries)]
 
         # Define all weight lists used in tools of additive raster calculator as Wn, where n in [18, 21, 26, 28]
-        weight_list = {
-            "W18": (0.09, 0.455, 0.273, 0.182),
-            "W21": (0.143, 0.238),
-            "W26": (0.15, 0.503, 0.096, 0.251),
-            "W28": (0.391, 0.087, 0.262, 0.217)
-        }
+        weight_list = {}
 
+        f = open(model_info_files["weight_list"], "r")
+        for line in f.readlines()[1:]:
+            lineSplit = line.rstrip("\n").rstrip(",").split(",")
+            weight_list["W{}".format(lineSplit[0])] = [float(x) for x in lineSplit[1:] if len(x.strip(" ")) > 0]
+        #--------------------------------------------------------------------
 
         print("Run Tools 1, 2, & 3")
         TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
