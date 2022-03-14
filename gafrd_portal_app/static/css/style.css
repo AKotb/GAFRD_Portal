@@ -198,7 +198,19 @@ a{
   background: url("../img/search-icon.png") no-repeat scroll 0 0 transparent;
 }
 
-input[type=text] {
+.search-field{
+	height: 100%;
+  	width: 74%;
+   font-size: 12px;
+   border: none;
+   background-color: rgb(42,42,44);
+   direction: rtl;
+   color: rgb(211,206,200);
+   float:right;
+   margin-right: 1%;
+}
+
+/*input[type=text] {
   height: 100%;
   width: 74%;
   font-size: 12px;
@@ -208,7 +220,7 @@ input[type=text] {
   color: rgb(211,206,200);
   float:right;
   margin-right: 1%;
-}
+}*/
 
 .quality-lbl{
 	background-color:rgb(47, 85, 151);
