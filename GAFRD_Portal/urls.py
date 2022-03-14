@@ -19,11 +19,13 @@ from django.urls import include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls import url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('gafrd_portal_app/', include('gafrd_portal_app.urls')),
     path('', RedirectView.as_view(url='gafrd_portal_app/', permanent=True)),
     path(r'^favicon\.ico$', RedirectView.as_view(url='/static/img/favicon.png')),
+    url(r"^", include("users.urls")),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
