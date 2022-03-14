@@ -1,0 +1,81 @@
+<!--users/templates/base.html-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        label,
+        input {
+            display: block;
+        }
+
+        span.helptext {
+            display: none;
+        }
+    </style>
+    {% load static %}
+    <title>تسجيل الدخول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="row">
+            {% load static %}
+            <img class="col_header1" src="{% static 'img/h_img1.png' %}">
+            <img class="col_header2" src="{% static 'img/h_img2.png' %}">
+            <div class="col_header3">
+                <p>جمهورية مصر العربية</p>
+                <p>الهيئة العامة لتنمية الثروة السمكية</p>
+            </div>
+            <img class="col_header4" src="{% static 'img/h_img3.png' %}">
+        </div>
+    </div>
+    <div class="row main">
+        <div class="leftcolumn">
+            <div class="card card-menu">
+                <div class="row-menu">
+                    <a href="{% url 'login' %}">
+                        <div class="col-menu col-menu-all">تسجيل الدخول</div>
+                    </a>
+                    <a href="{% url 'contactus' %}">
+                        <div class="col-menu col-menu-all">اتصل بنا</div>
+                    </a>
+                    <a href="{% url 'services' %}">
+                        <div class="col-menu col-menu-all">خدماتنا</div>
+                    </a>
+                    <a href="{% url 'elibrary' %}">
+                        <div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
+                    </a>
+                    <a href="{% url 'index' %}">
+                        <div class="col-menu col-menu-last">الرئيسية</div>
+                    </a>
+                </div>
+            </div>
+            <div class="card card-map">
+                <div>
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="rightcolumn">
+            <div class="card">
+                <h2>About Me</h2>
+                <div class="fakeimg" style="height:100px;">Image</div>
+                <p>Some text about me</p>
+            </div>
+            <div class="card">
+                <h3>Popular Post</h3>
+                <div class="fakeimg">Image</div>
+            </div>
+            <div class="card">
+                <h3>Follow Me</h3>
+                <p>Some text..</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
