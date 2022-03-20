@@ -1,6 +1,6 @@
 import os
-from gafrd_portal_app.model_tools import TSModel
 
+from gafrd_portal_app.model_tools import TSModel
 
 
 class ExecuteModel:
@@ -9,7 +9,7 @@ class ExecuteModel:
     def run(data_inputs_path, data_outputs_path):
 
         # Define all main inputs to tools as Inputs (In), where n from 1 to 16
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         model_info_files = {
             "data_inputs": "data_inputs.csv",
             "data_outputs": "data_outputs.csv",
@@ -34,7 +34,8 @@ class ExecuteModel:
         f = open(model_info_files["data_outputs"], "r")
         for line in f.readlines()[1:]:
             lineSplit = line.rstrip("\n").split(",")
-            data_outputs["TO{}".format(lineSplit[0])] = "{}\\{}.{}".format(data_outputs_path, lineSplit[1], lineSplit[2])
+            data_outputs["TO{}".format(lineSplit[0])] = "{}\\{}.{}".format(data_outputs_path, lineSplit[1],
+                                                                           lineSplit[2])
 
         # Define all reclassify lists used in tools as Rn,
         # where n in [14, 15, 16, 17, 19, 20, 22, 23, 24, 25, 27, 30]
@@ -55,7 +56,7 @@ class ExecuteModel:
         for line in f.readlines()[1:]:
             lineSplit = line.rstrip("\n").rstrip(",").split(",")
             weight_list["W{}".format(lineSplit[0])] = [float(x) for x in lineSplit[1:] if len(x.strip(" ")) > 0]
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
 
         print("Run Tools 1, 2, & 3")
         TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
@@ -100,8 +101,8 @@ class ExecuteModel:
 
         print("Run Tool 21")
         TSModel.raster_calc_add([data_outputs["TO19"], data_outputs["TO20"]],
-                                   weight_list["W21"],
-                                   data_outputs["TO21"])
+                                weight_list["W21"],
+                                data_outputs["TO21"])
 
         print("Run Tools 22, 23, 24, & 25")
         TSModel.raster_reclassify(data_inputs["I8"], reclassify_list["R22"], data_outputs["TO22"])
@@ -126,7 +127,7 @@ class ExecuteModel:
 
         print("Run Tool 29")
         TSModel.raster_calc_mul([data_outputs["TO13"], data_outputs["TO28"]],
-                                   data_outputs["TO29"])
+                                data_outputs["TO29"])
 
         print("Run Tool 30")
         TSModel.raster_reclassify(data_outputs["TO29"], reclassify_list["R30"], data_outputs["TO30"])

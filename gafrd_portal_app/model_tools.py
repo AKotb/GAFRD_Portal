@@ -1,8 +1,7 @@
-from osgeo import ogr, osr
-from osgeo import gdal
 import numpy as np
 from PIL import Image
-import os
+from osgeo import gdal
+from osgeo import ogr, osr
 
 
 class TSModel:
@@ -507,14 +506,14 @@ class TSModel:
         print(np.min(band_arr), np.max(band_arr))
         # scale ascending
         scaled = 255 * (band_arr - bmin) / (bmax - bmin)
-        #print(np.min(scaled), np.max(scaled))
+        # print(np.min(scaled), np.max(scaled))
         scaled[np.where(scaled > 255)] = 255
         scaled[np.where(scaled < 0)] = 0
         scaled = scaled.astype(int)
-        #print(np.min(scaled), np.max(scaled))
+        # print(np.min(scaled), np.max(scaled))
         scaled2 = 255 - scaled
-        #print(np.min(scaled2), np.max(scaled2))
-        #print(scaled[25, 57], scaled2[25, 57])
+        # print(np.min(scaled2), np.max(scaled2))
+        # print(scaled[25, 57], scaled2[25, 57])
         scaled3 = 0 * scaled
         scaled4 = 255 + scaled3
         scaled4[np.where(band_arr == nan_value)] = 0
@@ -543,7 +542,3 @@ class TSModel:
         txtInfo.write("top:{}\n".format(boundingBox[1]))
         txtInfo.write("left:{}\n".format(boundingBox[2]))
         txtInfo.write("right:{}\n".format(boundingBox[3]))
-
-
-
-

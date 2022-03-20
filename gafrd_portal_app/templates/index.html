@@ -15,16 +15,17 @@
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-	<script src="https://unpkg.com/shp-write@latest/shpwrite.js"></script>
-	{% load static %}
-	<script src="{% static 'js/shpwrite.js' %}"></script>
+    <script src="https://unpkg.com/shp-write@latest/shpwrite.js"></script>
+    {% load static %}
+    <script src="{% static 'js/shpwrite.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.js" type="text/javascript"></script>
-    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet"
+          type="text/css"/>
 </head>
 <body>
 
@@ -85,7 +86,8 @@
                     </div>
                 </div>
             </div>
-            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
+            <div id="legend_div"
+                 style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
                 <img id="legend_img_src" src="" alt="" width="200px;"/>
             </div>
         </div>
@@ -185,17 +187,23 @@
             Reclassify</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
                 style="float: left;">Final Suitability Map Model</label><br/> -->
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')"
+                   id="FinalSuitabilityModel"/><label
                 style="float: left;">Final Suitability Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')"
+                   id="SoilSubModel"/><label
                 style="float: left;">Soil Sub-Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')"
+                   id="SocioEconomic"/><label
                 style="float: left;">Socio Economic</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
                    id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')"
+                   id="FinalRestrictionModel"/><label
                 style="float: left;">Final Restriction Model</label><br/>
-            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button" onclick="hide_results();">رجوع</button>
+            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button"
+                    onclick="hide_results();">رجوع
+            </button>
         </div>
     </div>
 </div>
@@ -204,6 +212,10 @@ $(document).on({
     ajaxStart: function() { $("body").addClass("loading");},
     ajaxStop: function() { $("body").removeClass("loading");}
 });
+
+
+
+
 </script>
 <script>
 	var polygonCoordinates = "";
@@ -659,11 +671,15 @@ for (i = 0; i < toggler.length; i++) {
     this.classList.toggle("caret-down");
   });
 }
+
+
+
+
 </script>
 <div class="modal2"><h3>Please Wait, Loading...</h3>
 </div>
 {% csrf_token %}
-<a id="clip_by_polygon" ></a>
+<a id="clip_by_polygon"></a>
 <a id="export_shp"></a>
 </body>
 </html>

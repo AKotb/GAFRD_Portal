@@ -1,11 +1,11 @@
 import os.path
 
-from django.shortcuts import render
-
 # Create your views here.
 from django.shortcuts import render
-from gafrd_portal_app.run import ExecuteModel
+
 from gafrd_portal_app.model_tools import TSModel
+from gafrd_portal_app.run import ExecuteModel
+
 
 def index(request):
     """View function for home page of site."""

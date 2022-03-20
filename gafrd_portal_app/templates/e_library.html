@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-	{% load static %}
-	<title>المكتبة الإلكترونية</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    {% load static %}
+    <title>المكتبة الإلكترونية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 </head>
 <body>
 
 <div class="header">
-	<div class="row">
-		{% load static %}
-	  <img class="col_header1" src="{% static 'img/h_img1.png' %}">
-	  <img class="col_header2" src="{% static 'img/h_img2.png' %}">
-	  <div class="col_header3">
-		<p>جمهورية مصر العربية</p>
-		<p>الهيئة العامة لتنمية الثروة السمكية</p>
-	  </div>
-	  <img class="col_header4" src="{% static 'img/h_img3.png' %}">
-	</div>
+    <div class="row">
+        {% load static %}
+        <img class="col_header1" src="{% static 'img/h_img1.png' %}">
+        <img class="col_header2" src="{% static 'img/h_img2.png' %}">
+        <div class="col_header3">
+            <p>جمهورية مصر العربية</p>
+            <p>الهيئة العامة لتنمية الثروة السمكية</p>
+        </div>
+        <img class="col_header4" src="{% static 'img/h_img3.png' %}">
+    </div>
 </div>
 
 <div class="row main">
-  <div class="leftcolumn">
-	<div class="card card-menu">
-		<div class="row-menu">
-		  <a href="{% url 'login' %}">
-			<div class="col-menu col-menu-all">تسجيل الدخول</div>
-		  </a>
-		  <a href="{% url 'contactus' %}">
-			<div class="col-menu col-menu-all">اتصل بنا</div>
-		  </a>
-		  <a href="{% url 'services' %}">
-			<div class="col-menu col-menu-all">خدماتنا</div>
-		  </a>
-		  <a href="{% url 'elibrary' %}">
-			<div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
-		  </a>
-		  <a href="{% url 'index' %}">
-			<div class="col-menu col-menu-last">الرئيسية</div>
-		  </a>
-		</div>
-	</div>
-	<div class="card card-map">
-		{% load static %}
-		<div id="img-div" class="e-library-img">
-			<img src="{% static 'img/e-library.png' %}" height="450px;" width="900px;" style="margin-top: 30px;">
-		</div>
-		<div id="fish-types" class="fish-types-div">
+    <div class="leftcolumn">
+        <div class="card card-menu">
+            <div class="row-menu">
+                <a href="{% url 'login' %}">
+                    <div class="col-menu col-menu-all">تسجيل الدخول</div>
+                </a>
+                <a href="{% url 'contactus' %}">
+                    <div class="col-menu col-menu-all">اتصل بنا</div>
+                </a>
+                <a href="{% url 'services' %}">
+                    <div class="col-menu col-menu-all">خدماتنا</div>
+                </a>
+                <a href="{% url 'elibrary' %}">
+                    <div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
+                </a>
+                <a href="{% url 'index' %}">
+                    <div class="col-menu col-menu-last">الرئيسية</div>
+                </a>
+            </div>
+        </div>
+        <div class="card card-map">
+            {% load static %}
+            <div id="img-div" class="e-library-img">
+                <img src="{% static 'img/e-library.png' %}" height="450px;" width="900px;" style="margin-top: 30px;">
+            </div>
+            <div id="fish-types" class="fish-types-div">
 				<span class="fish-types-span">
 					<h1 class="fish-types-h1">تصنيف الأسماك</h1>
 					 <p class="fish-types-intro">يُقسّم علماء الأحياء أنواع السمك إلى فئتين أساسيَّتين، هما الأسماك العظميّة والغضروفيّة.</p>
@@ -58,17 +58,17 @@
 							<p class="fish-types-p"> أما الأسماك العظميّة فإنَّ جسمها مُكوَّنٌ بالكامل من عظام صُلبة، وتغطّي جلدها حراشف متراكبة فوق بعضها، ولديها فوق خياشيمها غلافٌ واقٍ صُلْب يحميها من الأذى، كما أنَّ في أجسامها عضواً خاصاً يُشبه كيساً مملوءاً بالهواء، ويُساعدها على البقاء طافية في مياه البحر، حتى ولو كانت ساكنةً تماماً، وأنواع الأسماك العظميّة كثيرة جداً، وهي تضمّ جميع أنواع الأسماك في العالم تقريباً، فمنها ما يعيشُ في المياه العذبة من أنهارٍ وبحيرات، ومنها ما يسكن البحار الضحلة أو أعماقَ المُحيط، إلا أنّ أغلبها تسكنُ في أماكن قريبةً من سطح الماء، ومعظمها تتغذّى على النباتات والطحالب والعوالق، ولكن بعضها مُفترسة تأكل اللحوم، وتعتمدُ الأسماك العظميَّة في التكاثر على وضع أعدادٍ هائلة من البيوض قد تصلُ للآلاف، ومن ثمَّ تتركُها وترحلُ دون توفير أيّ نوعٍ من الحماية أو الرعاية لصغارها.</p>
 					</ol>
 				</span>
-			</div>
-			
-			<div id="fish-types-Bolty" class="fish-types-div">
+            </div>
+
+            <div id="fish-types-Bolty" class="fish-types-div">
 				<span class="fish-types-span">
 					<h5 class="fish-types-h5">البلطي النيلي</h5>
 					<p class="fish-types-p">سمكة قارية تفضل العيش في المياه الضحلة. ودرجتا تحمل الحرارة العليا والدنيا هما 42 oم و 11-12 oم، على الترتيب، بينما المدى الحراري المفضل هو 31-36 o م والبلطي النيلي سمكه متنوعة التغذية تتغذى على الفيتوبلانكتون، البريفيتون، النباتات المائية، اللافقاريات الصغيرة، الكائنات الحيوانية القاعية، البقايا العضوية وتجمعات البكتريا المصاحبة لها. ويمكن للبلطي النيلي ترشيح الطعام من خلال حجز المواد العالقة بما في ذلك الفيتوبلانكتون والبكتريا في التجويف البلعومى، إلا أن وسيلة التغذية الرئيسية هى الرعي على طبقة البريفيتون. ويصل البلطي النيلي للنضوج الجنسي في الأحواض عند عمر يتراوح بين 5-6 شهور.</p>
 					<p class="fish-types-p">تضع الأنثى البالغ وزنها 100 جم حوالى 100 بيضة في الفقسة (البطن) الواحدة، بينما الأنثى التي تزن 600 - 1000 جم يمكن أن يصل عدد البيض الذي تضعه 1000 - 1500 بيضة. ويظل الذكر في موقع العش لحمايته وحماية منطقة النفوذ، وبذلك يمكنه تخصيب بيض عدد متوالى من الإناث. وإناث البلطي النيلي تصوم أثناء تحضين البيض واليرقات. ويمكن للبلطي النيلي أن يعيش لعمر 10 سنوات وقد يصل وزنه إلى أكثر من خمسة كجم.</p>
 				</span>
-			</div>
-			
-			<div id="fish-types-Bayad" class="fish-types-div">
+            </div>
+
+            <div id="fish-types-Bayad" class="fish-types-div">
 				<span class="fish-types-span">
 					<h5 class="fish-types-h5">سمك البياض</h5>
 					<p class="fish-types-p">هو جنس من الأسماك ينتمي إلى رتبة السلوريات أو القراميط، وفصيلة البياضيات، وهي أسماك تعيش في المياه العذبة في كل من أفريقيا الاستوائية وآسيا، وتتميز بعيون صغيرة، وزعنفة ظهرية كبيرة، وبوجود أربعة شوارب أو زوائد حسية حول الفم، وتتميز أسماك البياض بقيمتها الغذائية العالية وفوائدها العديدة للجسم.</p>
@@ -88,56 +88,57 @@
 							<li>باغروس أوبانغينسيس </li>
 					</ul>
 				</span>
-			</div>
-	</div>
-  </div>
-	<div class="rightcolumn">
-			<div class="card card-search">
-				<button class="search-icon" type="submit"><i></i></button>
-				<input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
-				<button class="search-button">البحث</button>
-			</div>
-			<div class="card card-adv-search">
-				<div class="fast-search"><a href="#" class="fast-search-link">بحث سريع</a></div>
-				<div class="reset">
-					<button class="search-icon" type="submit"><i></i></button>
-					<span class="search-span">بحث متقدم</span>
-					<a href="#" class="fast-search-link">إعادة ظبط</a>
-				</div>
-			</div>
-			<div class="card card-toc">
-				<div class="e-library-header">المكتبة الإلكترونية</div>
-				<div class="e-library-toc">
-					<div id="fishTyps" class="e-library-table">
-						<span id="fishTypesCollaps" class="collaps">أنواع الأسماك</span>
-						<div style="float: right;">
-						<ul id="fishTypesUl" class="fish-types-ul">
-							<li><span id="fish-bolty" class="collaps">بلطي نيلي</span></li>
-							<li><span id="fish-bayad" class="collaps">بياض</span></li>
-							<li><span class="collaps">بوري</span></li>
-							<li><span class="collaps">دنيس</span></li>
-							<li><span class="collaps">لوط</span></li>
-							<li><span class="collaps">سردين</span></li>
-							<li><span class="collaps">مرجان</span></li>
-							<li><span class="collaps">بربوني</span></li>
-							<li><span class="collaps">مكرونة</span></li>
-						</ul></div>
-					</div>
-					<div class="e-library-table">
-						<span id="fishTypesCollaps" class="collaps">أمراض الأسماك</span>
-					</div>
-					<div class="e-library-table">
-						<span id="fishTypesCollaps" class="collaps">الاستزراع</span>
-					</div>
-					<div class="e-library-table">
-						<span id="fishTypesCollaps" class="collaps">مؤشرات جودة المياه</span>
-					</div>
-					<div class="e-library-table">
-						<span id="fishTypesCollaps" class="collaps">مؤشرات جودة التربة</span>
-					</div>
-				</div>
-			</div>
-	</div>
+            </div>
+        </div>
+    </div>
+    <div class="rightcolumn">
+        <div class="card card-search">
+            <button class="search-icon" type="submit"><i></i></button>
+            <input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
+            <button class="search-button">البحث</button>
+        </div>
+        <div class="card card-adv-search">
+            <div class="fast-search"><a href="#" class="fast-search-link">بحث سريع</a></div>
+            <div class="reset">
+                <button class="search-icon" type="submit"><i></i></button>
+                <span class="search-span">بحث متقدم</span>
+                <a href="#" class="fast-search-link">إعادة ظبط</a>
+            </div>
+        </div>
+        <div class="card card-toc">
+            <div class="e-library-header">المكتبة الإلكترونية</div>
+            <div class="e-library-toc">
+                <div id="fishTyps" class="e-library-table">
+                    <span id="fishTypesCollaps" class="collaps">أنواع الأسماك</span>
+                    <div style="float: right;">
+                        <ul id="fishTypesUl" class="fish-types-ul">
+                            <li><span id="fish-bolty" class="collaps">بلطي نيلي</span></li>
+                            <li><span id="fish-bayad" class="collaps">بياض</span></li>
+                            <li><span class="collaps">بوري</span></li>
+                            <li><span class="collaps">دنيس</span></li>
+                            <li><span class="collaps">لوط</span></li>
+                            <li><span class="collaps">سردين</span></li>
+                            <li><span class="collaps">مرجان</span></li>
+                            <li><span class="collaps">بربوني</span></li>
+                            <li><span class="collaps">مكرونة</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="e-library-table">
+                    <span id="fishTypesCollaps" class="collaps">أمراض الأسماك</span>
+                </div>
+                <div class="e-library-table">
+                    <span id="fishTypesCollaps" class="collaps">الاستزراع</span>
+                </div>
+                <div class="e-library-table">
+                    <span id="fishTypesCollaps" class="collaps">مؤشرات جودة المياه</span>
+                </div>
+                <div class="e-library-table">
+                    <span id="fishTypesCollaps" class="collaps">مؤشرات جودة التربة</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
 	var collaps = false;
@@ -197,6 +198,10 @@
 			bayadCollaps = false;
 		}
 	});
+
+
+
+
 </script>
 </body>
 </html>
