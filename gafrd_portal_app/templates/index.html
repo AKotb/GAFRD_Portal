@@ -15,17 +15,16 @@
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
-    <script src="https://unpkg.com/shp-write@latest/shpwrite.js"></script>
-    {% load static %}
-    <script src="{% static 'js/shpwrite.js' %}"></script>
+	<script src="https://unpkg.com/shp-write@latest/shpwrite.js"></script>
+	{% load static %}
+	<script src="{% static 'js/shpwrite.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.js" type="text/javascript"></script>
-    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet"
-          type="text/css"/>
+    <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -66,7 +65,7 @@
         <div class="card card-map">
             <div id="mapid" style="position: relative; height:100%; width:100%; z-index:1000"></div>
             <div id="toolbar"
-                 style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:250px; height: 35px; display: block; ">
+                 style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:284px; height: 35px; display: block; ">
                 <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
                         onclick='showHand()'><img src="{% static 'img/hand.png' %}" width="31px"/></a></div>
                 <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
@@ -85,9 +84,10 @@
                         <div *ngIf="shown" leafletDraw [leafletDrawOptions]="drawOptions"></div>
                     </div>
                 </div>
+                <div style="border-left: 1px solid black; width: 37px; float: left; height: 33px; cursor: pointer; display: block; background: white;"><a onclick='convert_csv();convert_shp();'><img id="exportDiv" style="display: none;" src="{% static 'img/export.png' %}" width="35px" height="33px"/></a>
+                </div>
             </div>
-            <div id="legend_div"
-                 style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
+            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
                 <img id="legend_img_src" src="" alt="" width="200px;"/>
             </div>
         </div>
@@ -95,7 +95,7 @@
     <div class="rightcolumn">
         <div class="card card-search">
             <button class="search-icon" type="submit"><i></i></button>
-            <input class="search-field" type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
+            <input type="text" placeholder="ابحث بكلمة|ابحث عن الفرص" name="search">
             <button class="search-button">البحث</button>
         </div>
         <div class="card card-adv-search">
@@ -187,23 +187,17 @@
             Reclassify</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
                 style="float: left;">Final Suitability Map Model</label><br/> -->
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')"
-                   id="FinalSuitabilityModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
                 style="float: left;">Final Suitability Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')"
-                   id="SoilSubModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
                 style="float: left;">Soil Sub-Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')"
-                   id="SocioEconomic"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
                 style="float: left;">Socio Economic</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
                    id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')"
-                   id="FinalRestrictionModel"/><label
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
                 style="float: left;">Final Restriction Model</label><br/>
-            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button"
-                    onclick="hide_results();">رجوع
-            </button>
+            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button" onclick="hide_results();">رجوع</button>
         </div>
     </div>
 </div>
@@ -212,10 +206,6 @@ $(document).on({
     ajaxStart: function() { $("body").addClass("loading");},
     ajaxStop: function() { $("body").removeClass("loading");}
 });
-
-
-
-
 </script>
 <script>
 	var polygonCoordinates = "";
@@ -252,7 +242,7 @@ $(document).on({
 		tileSize: 512,
 		zoomOffset: -1
 	});
-	
+
 	var streets = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -261,21 +251,21 @@ $(document).on({
 		tileSize: 512,
 		zoomOffset: -1
 	});
-	
+
 	var map = L.map('mapid', {
 		center: [27.3, 30.8],
 		zoom: 6,
 		zoomSnap: 0.25,
 		layers: [satellite]
 	});
-	
+
 	var baseLayers = {
 		"Satellite View": satellite,
 		"Map View": streets,
 	};
-	
+
 	var editableLayers = new L.FeatureGroup();
-	var shapeLayers;
+	var shapeLayers = new L.FeatureGroup();
 	map.addLayer(editableLayers);
 	var overlayMaps = {
 		"الطبقات المضافة": editableLayers
@@ -307,7 +297,7 @@ $(document).on({
 
  var latlng1;
  var latlng2;
- 
+
 map.on('click', function (e) {
 	if(zoomInByDraw)
 		map.zoomIn(0.25, {animate:false});
@@ -352,9 +342,9 @@ function edit(){
 		this.map.removeControl(this.drawControl);
 		drawControlCreated = false;
 	}
-	
+
 	else{
-		
+
 		drawControl = new L.Control.Draw(drawPluginOptions);
 		map.addControl(drawControl);
 		map.on(L.Draw.Event.CREATED, function(e) {
@@ -411,8 +401,13 @@ function edit(){
 		    //polygonCoordinates = "";
 		}
 		  editableLayers.addLayer(layer);
-		  shapeLayers = new L.FeatureGroup().addLayer(layer);
-		    convert_shp();
+		  //shapeLayers = new L.FeatureGroup().addLayer(layer);
+          shapeLayers.addLayer(layer);
+            var x = document.getElementById("exportDiv");
+            if (x.style.display === "none") {
+              x.style.display = "inline-block";
+            }
+		    //convert_shp();
 		    clip_by_polygon();
 		    tempArray = null;
 			temp = "";
@@ -425,7 +420,7 @@ function edit(){
 		  //shapeLayers = new L.FeatureGroup().addLayer(layer)
 		  //polygonCoordinates = "";
 		});
-		
+
 		map.on(L.Draw.Event.EDITED, function (e) {
 				var layers = e.layers;
 				var countOfEditedLayers = 0;
@@ -434,9 +429,9 @@ function edit(){
 				});
 				console.log("Edited " + countOfEditedLayers + " layers");
 			});
-			
+
 		map.on('draw:deleted', function(e){
-			
+
 			tempArray = null;
 			temp = "";
 			polygonCoordinates = "";
@@ -449,30 +444,42 @@ function edit(){
 
 
 
-/*function convert_json()
+function convert_csv()
 {
-     // Stringify the GeoJson
-      convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+     var data = shapeLayers.toGeoJSON();
+     data = JSON.stringify(data);
+     dataObj = JSON.parse(data);
+
+     str_coords = "Polygon ID,Latitude,Longitude\n";
+     for(let i=0; i<dataObj.features.length; i++){
+        for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++){
+            str_coords += 'Poly' + (i+1) + ',';
+            str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
+            str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
+        }
+     }
+     console.log(str_coords);
+
+     convertedData = 'data:text/csv;charset=utf-8,' + encodeURI(str_coords);
       // Create export
-      document.getElementById('export_json').setAttribute('href', 'data:' + convertedData);
-      document.getElementById('export_json').setAttribute('download', 'drawnItem.geojson');
-}*/
+      document.getElementById('export_csv').setAttribute('href', convertedData);
+      document.getElementById('export_csv').setAttribute('download', name+'.csv');
+      document.getElementById('export_csv').click();
+}
 
 function convert_shp()
 {
 	// (optional) set names for feature types and zipped folder
 	var options = {
-		folder: name,
+		folder: 'shapefile_'+name,
 		types: {
-			point: 'drawnpoints',
-			polygon: name,
-			line: 'drawnlines'
+			polygon: name
 		}
 	};
-	var content = shpwrite.download(shapeLayers.toGeoJSON(), options);
-	document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + content);
+    var data = shapeLayers.toGeoJSON();
+	document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(shapeLayers.toGeoJSON(), options));
 	shapeLayers = null;
-	
+
 }
 
 function checkbox_status(id){
@@ -630,23 +637,23 @@ $(function () {
 				        //Create a Tree View
 						const ul = document.createElement("ul");
 						ul.setAttribute('id', name);
-						
+
 						const li = document.createElement("li");
-						
+
 						const span = document.createElement("span");
 						span.setAttribute('class', 'caret');
-						
+
 						const text = document.createTextNode(name);
-						
+
 						span.appendChild(text);
 						li.appendChild(span);
 						ul.appendChild(li);
-						
+
 						var results_div = document.getElementById('results_div');
 						var x = results_div.childElementCount;
 				        results_div.insertBefore(ul, results_div.children[x-1]);
 						isTreeCreated = true;
-						
+
 						/*var tree = '<br><ul id="results_tree">'
 				        tree += '<li><span class="caret">' + name + '</span></li></ul>'
 				        var results_div = document.getElementById('results_div');
@@ -671,15 +678,12 @@ for (i = 0; i < toggler.length; i++) {
     this.classList.toggle("caret-down");
   });
 }
-
-
-
-
 </script>
 <div class="modal2"><h3>Please Wait, Loading...</h3>
 </div>
 {% csrf_token %}
-<a id="clip_by_polygon"></a>
+<a id="clip_by_polygon" ></a>
 <a id="export_shp"></a>
+<a id="export_csv"></a>
 </body>
 </html>
