@@ -450,7 +450,10 @@ class TSModel:
         :param area_clipped_dir: A fullpath for clipped area tif file.
         :param out_clipped_ras: A filename for clipped area - shp for boundary and tif for data.
         """
-
+        print("in_ras:\n", in_ras)
+        print("in_clipper:\n", in_clipper)
+        print("area_clipped_dir:\n", area_clipped_dir)
+        print("area_clipped_name:\n", area_clipped_name)
         nan_value = -3.4028230607370965e+38  # 2**16 - 1
         nan_value = 10000
 

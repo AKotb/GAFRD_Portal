@@ -11,6 +11,7 @@
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
@@ -65,7 +66,7 @@
         <div class="card card-map">
             <div id="mapid" style="position: relative; height:100%; width:100%; z-index:1000"></div>
             <div id="toolbar"
-                 style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:284px; height: 35px; display: block; ">
+                 style="position: relative; left: 5px; bottom: 1px; top: -40px;  z-index:2000; border: 1px solid black; width:250px; height: 35px; display: block; ">
                 <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
                         onclick='showHand()'><img src="{% static 'img/hand.png' %}" width="31px"/></a></div>
                 <div style="border-right: 1px solid black; width: 35px; float: left; height: 100%; cursor: pointer;"><a
@@ -83,8 +84,6 @@
                     <div leaflet style="height: 0px;" [leafletOptions]="options">
                         <div *ngIf="shown" leafletDraw [leafletDrawOptions]="drawOptions"></div>
                     </div>
-                </div>
-                <div style="border-left: 1px solid black; width: 37px; float: left; height: 33px; cursor: pointer; display: block; background: white;"><a onclick='convert_csv();convert_shp();'><img id="exportDiv" style="display: none;" src="{% static 'img/export.png' %}" width="35px" height="33px"/></a>
                 </div>
             </div>
             <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
@@ -197,6 +196,20 @@
                    id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
                 style="float: left;">Final Restriction Model</label><br/>
+            <table id="polyTree">
+                <tr>
+                    <!--<th>
+                        <input name="pol_view_checkbox" type="checkbox" id="pol_view_checkbox"/>
+                    </th>-->
+                    <th>
+                        Polygon Name
+                    </th>
+                    <th>
+                        <button class="btn-action" onclick="convert_csv()"><i class="fa fa-download"></i> CSV</button>
+                        <button class="btn-action" onclick="convert_shp()"><i class="fa fa-download"></i> SHP</button>
+                    </th>
+                </tr>
+            </table>
             <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button" onclick="hide_results();">رجوع</button>
         </div>
     </div>
@@ -208,6 +221,7 @@ $(document).on({
 });
 </script>
 <script>
+    var polyIndex = 1;
 	var polygonCoordinates = "";
 	var firstClick = false;
 	var temp = "";
@@ -231,7 +245,6 @@ $(document).on({
 	var all_lon = [];
 
     var name = "";
-	var isTreeCreated = false;
 	var curSelectedLayer = "";
 
 	var satellite = L.tileLayer(mapUrl, {
@@ -357,27 +370,21 @@ function edit(){
             var date = today.getFullYear()+""+(today.getMonth()+1)+""+today.getDate();
             var time = today.getHours()+""+today.getMinutes()+""+today.getSeconds();
             var dateTime = date+time;
-            name = type + "_" + dateTime;
+            name = "Poly" + polyIndex + "_" + dateTime;
+            //name = type + polyIndex + "_" + dateTime;
+            //name = type + "_" + polyIndex;
+            polyIndex += 1;
 			curSelectedLayer = name;
 			layer.on('mouseover', function () {
 				  this.setStyle({
 					'fillColor': '#0000ff',
 					'fillOpacity': 0.5,
 				  });
-				  if(isTreeCreated)
-				  {
-					if(curSelectedLayer === document.getElementById(name).id)
-						document.getElementById(name).style.color = '#0000ff';
-				  }
 				});
 				layer.on('mouseout', function () {
 				  this.setStyle({
 					'fillColor': '#ff2222'
 				  });
-				  if(isTreeCreated){
-					if(curSelectedLayer === document.getElementById(name).id)
-						document.getElementById(name).style.color = 'black';
-					}
 				});
 			/*feature = layer.feature = layer.feature || {};
 			feature.type = feature.type || "Feature";*/
@@ -395,19 +402,10 @@ function edit(){
 					temp +=",";
 			}
 			polygonCoordinates +=temp + "]";
-			//console.log(polygonCoordinates);
-			/*var popupContent = '<div><div style="width: 100%; text-align: center;"><a id="export_json" style="cursor: pointer; font-weight: bold; text-align: center; font-size: 15px; margin-top: 10px; color: white; background-color: RoyalBlue; border: 2px solid #04AA6D; padding: 10px 20px; text-decoration: none; display: inline-block; width: 150px;" onclick="convert_json()">Export Json</a></div><div style="width: 100%; text-align: center;"><a id="export_shp" style="cursor: pointer; font-weight: bold; text-align: center; font-size: 15px; margin-top: 5px; color: white; border: 2px solid #04AA6D; padding: 10px 20px; text-decoration: none; display: inline-block; background-color: RoyalBlue; width: 150px;" onclick="convert_shp()">Export Shp</a></div>{% csrf_token %}<div style="width: 100%; text-align: center;"><a id="clip_by_polygon" style="cursor: pointer; font-weight: bold; text-align: center; font-size: 15px; margin-top: 5px; color: white; border: 2px solid #04AA6D; padding: 10px 20px; text-decoration: none; display: inline-block; background-color: RoyalBlue; width: 150px;" onclick="clip_by_polygon()">Clip Model</a></div></div>';*/
-			//data = layer.toGeoJSON();
-		    //polygonCoordinates = "";
 		}
 		  editableLayers.addLayer(layer);
 		  //shapeLayers = new L.FeatureGroup().addLayer(layer);
           shapeLayers.addLayer(layer);
-            var x = document.getElementById("exportDiv");
-            if (x.style.display === "none") {
-              x.style.display = "inline-block";
-            }
-		    //convert_shp();
 		    clip_by_polygon();
 		    tempArray = null;
 			temp = "";
@@ -442,20 +440,33 @@ function edit(){
 	}
 }
 
-
+function getCheckedList()
+{
+    var checkedList = [];
+    var table = document.getElementById("polyTree");
+    for (var i = 1, row; row = table.rows[i]; i++) {
+       console.log("CheckBox: " + row.cells[1].children[0].checked);
+       checkedList[i-1] = row.cells[1].children[0].checked; //Checkbox Element
+    }
+    return checkedList;
+}
 
 function convert_csv()
 {
+     var checkedList = getCheckedList();
      var data = shapeLayers.toGeoJSON();
-     data = JSON.stringify(data);
-     dataObj = JSON.parse(data);
+     var data_str = JSON.stringify(data);
+     dataObj = JSON.parse(data_str);
 
      str_coords = "Polygon ID,Latitude,Longitude\n";
      for(let i=0; i<dataObj.features.length; i++){
-        for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++){
-            str_coords += 'Poly' + (i+1) + ',';
-            str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
-            str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
+        if(checkedList[i]){
+            for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++)
+            {
+                str_coords += 'polygon_' + (i+1) + ',';
+                str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
+                str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
+            }
         }
      }
      console.log(str_coords);
@@ -463,7 +474,7 @@ function convert_csv()
      convertedData = 'data:text/csv;charset=utf-8,' + encodeURI(str_coords);
       // Create export
       document.getElementById('export_csv').setAttribute('href', convertedData);
-      document.getElementById('export_csv').setAttribute('download', name+'.csv');
+      document.getElementById('export_csv').setAttribute('download', 'Polygons Coordinates.csv');
       document.getElementById('export_csv').click();
 }
 
@@ -471,14 +482,27 @@ function convert_shp()
 {
 	// (optional) set names for feature types and zipped folder
 	var options = {
-		folder: 'shapefile_'+name,
+		folder: 'Polygons Shapefile',
 		types: {
-			polygon: name
+			polygon: 'Exported Polygons'
 		}
 	};
+	var checkedList = getCheckedList();
     var data = shapeLayers.toGeoJSON();
-	document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(shapeLayers.toGeoJSON(), options));
-	shapeLayers = null;
+    var data_str = JSON.stringify(data);
+    console.log("data Stringified: "+data_str);
+    var dataObj = JSON.parse(data_str);
+    for(let i=0; i<dataObj.features.length; i++){
+        if(!checkedList[i]){
+            delete dataObj.features[i];
+        }
+    }
+    data_str_after = JSON.stringify(dataObj);
+    console.log("data Stringified after removing: "+data_str_after);
+    console.log("Preparing to download shapefiles............");
+	document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
+	console.log("Shapefiles downloaded!");
+	//shapeLayers = null;
 
 }
 
@@ -597,12 +621,35 @@ function clip_by_polygon()
 			'polygonCoordinates': polygonCoordinates,
             'name': name
           },
-		  success: function (data) {
-            $("#dialog").html("Clipped Image Generated");
-		    $("#dialog").dialog("open");
-		    /*$(document).ajaxStop(function(){
-				polygonCoordinates = null;
-			});*/
+		  success: function (data) {         
+            var clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
+            var clippedImageBounds = [[Math.max.apply(null,all_lat), Math.min.apply(null, all_lon)], [Math.min.apply(null, all_lat), Math.max.apply(null, all_lon)]];
+            var image = L.imageOverlay(clippedImageUrl, clippedImageBounds);
+            image.addTo(map);
+            layerControl.addOverlay(image, name);
+            //editableLayers.addLayer(image);
+            image.bringToFront();
+            //listOfImages.push(image);
+            all_lat = [];
+            all_lon = [];
+
+            //Create Table Contents
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            const td_checkbox = document.createElement('td');
+            const checkbox = document.createElement("INPUT");
+            checkbox.setAttribute("type", "checkbox");
+            checkbox.style.textAlign = "center";
+
+            const text = document.createTextNode(name);
+            td.appendChild(text);
+            tr.appendChild(td);
+
+            td_checkbox.appendChild(checkbox);
+            tr.appendChild(td_checkbox);
+
+            document.getElementById('polyTree').appendChild(tr);
+                    
           },
           error: function (response) {
              // alert the error if any error occured
@@ -611,7 +658,7 @@ function clip_by_polygon()
           }
         });
 }
-$(function () {
+/*$(function () {
     $("#dialog").dialog({
         autoOpen: false,
         modal: true,
@@ -621,53 +668,11 @@ $(function () {
                     Close: function () {
                         //window.location.reload();
                         $(this).dialog('close');
-                    },
-                    Display: function () {
-                        var clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
-                        var clippedImageBounds = [[Math.max.apply(null,all_lat), Math.min.apply(null, all_lon)], [Math.min.apply(null, all_lat), Math.max.apply(null, all_lon)]];
-                        var image = L.imageOverlay(clippedImageUrl, clippedImageBounds);
-                        image.addTo(map);
-                        layerControl.addOverlay(image, name);
-                        //editableLayers.addLayer(image);
-                        image.bringToFront();
-                        //listOfImages.push(image);
-                        all_lat = [];
-				        all_lon = [];
-
-				        //Create a Tree View
-						const ul = document.createElement("ul");
-						ul.setAttribute('id', name);
-
-						const li = document.createElement("li");
-
-						const span = document.createElement("span");
-						span.setAttribute('class', 'caret');
-
-						const text = document.createTextNode(name);
-
-						span.appendChild(text);
-						li.appendChild(span);
-						ul.appendChild(li);
-
-						var results_div = document.getElementById('results_div');
-						var x = results_div.childElementCount;
-				        results_div.insertBefore(ul, results_div.children[x-1]);
-						isTreeCreated = true;
-
-						/*var tree = '<br><ul id="results_tree">'
-				        tree += '<li><span class="caret">' + name + '</span></li></ul>'
-				        var results_div = document.getElementById('results_div');
-						var x = results_div.childElementCount;
-						//var list = document.getElementsByClassName("rightcolumn")[0];
-						results_div.insertBefore(tree, results_div.children[x-1]);
-				        //list.innerHTML += tree;
-				        tree = "";*/
-				        //----------------------------------------------------------------------------------------
-                        $(this).dialog('close');
                     }
+                    
                 }
     });});
-
+*/
 
 var toggler = document.getElementsByClassName("caret");
 var i;

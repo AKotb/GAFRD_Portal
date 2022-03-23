@@ -57,7 +57,8 @@ class ExecuteModel:
             lineSplit = line.rstrip("\n").rstrip(",").split(",")
             weight_list["W{}".format(lineSplit[0])] = [float(x) for x in lineSplit[1:] if len(x.strip(" ")) > 0]
         # --------------------------------------------------------------------
-
+        print("data_inputs\n", data_inputs)
+        print("data_outputs\n", data_outputs)
         print("Run Tools 1, 2, & 3")
         TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
         TSModel.is_null(data_outputs["TO1"], data_outputs["TO2"])
