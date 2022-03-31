@@ -205,8 +205,8 @@
                         Polygon Name
                     </th>
                     <th>
-                        <button class="btn-action" onclick="convert_csv()"><i class="fa fa-download"></i> CSV</button>
-                        <button class="btn-action" onclick="convert_shp()"><i class="fa fa-download"></i> SHP</button>
+                        <button class="btn-action" onclick="convert_csv()" disabled="true"><i class="fa fa-download"></i> CSV</button>
+                        <button class="btn-action" onclick="convert_shp()" disabled="true"><i class="fa fa-download"></i> SHP</button>
                     </th>
                 </tr>
             </table>
@@ -241,12 +241,10 @@ $(document).on({
 	var right = 100.0;
 	var top = 100.0;
 	var bottom = 0.0;
-	var all_lat = [];
-	var all_lon = [];
-
     var name = "";
 	var curSelectedLayer = "";
-
+    var clippedImages = [];
+    var drawn_polygons_dict = {};
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -371,8 +369,6 @@ function edit(){
             var time = today.getHours()+""+today.getMinutes()+""+today.getSeconds();
             var dateTime = date+time;
             name = "Poly" + polyIndex + "_" + dateTime;
-            //name = type + polyIndex + "_" + dateTime;
-            //name = type + "_" + polyIndex;
             polyIndex += 1;
 			curSelectedLayer = name;
 			layer.on('mouseover', function () {
@@ -386,9 +382,9 @@ function edit(){
 					'fillColor': '#ff2222'
 				  });
 				});
-			/*feature = layer.feature = layer.feature || {};
-			feature.type = feature.type || "Feature";*/
 			var tempArray = layer._latlngs[0];
+            var all_lat = [];
+            var all_lon = [];
 		  if (type === 'polygon') {
 			polygonCoordinates +="["
 			for(var i=0; i<tempArray.length; i++)
@@ -404,19 +400,23 @@ function edit(){
 			polygonCoordinates +=temp + "]";
 		}
 		  editableLayers.addLayer(layer);
-		  //shapeLayers = new L.FeatureGroup().addLayer(layer);
           shapeLayers.addLayer(layer);
-		    clip_by_polygon();
+		    clip_by_polygon(all_lat, all_lon);
+		    var buttons = document.getElementsByClassName('btn-action');
+		    if(buttons[0].disabled == true)
+		    {
+		        buttons[0].disabled = false;
+		    }
+		    if(buttons[1].disabled == true)
+		    {
+		        buttons[1].disabled = false;
+		    }
 		    tempArray = null;
 			temp = "";
-			//var imageLegendUrl = "http://127.0.0.1:8000/static/polygons/"+name+"-legend.jpg";
 			var imageLegendUrl = "../static/polygons/"+name+"-legend.jpg";
 			var popupContent = '<h3>'+ name + '</h3><span>0</span><img width="100px" height="30px" src="'+imageLegendUrl+'"><span>100</span>';
 		    layer.bindPopup(popupContent);
 			polygonCoordinates = "";
-		  //data = layer.toGeoJSON();
-		  //shapeLayers = new L.FeatureGroup().addLayer(layer)
-		  //polygonCoordinates = "";
 		});
 
 		map.on(L.Draw.Event.EDITED, function (e) {
@@ -453,33 +453,48 @@ function getCheckedList()
 
 function convert_csv()
 {
+     var num = 0;
      var checkedList = getCheckedList();
      var data = shapeLayers.toGeoJSON();
      var data_str = JSON.stringify(data);
      dataObj = JSON.parse(data_str);
-
-     str_coords = "Polygon ID,Latitude,Longitude\n";
-     for(let i=0; i<dataObj.features.length; i++){
-        if(checkedList[i]){
-            for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++)
+     for(let n=0; n<checkedList.length; n++)
+        {
+            if(checkedList[n] == true)
             {
-                str_coords += 'polygon_' + (i+1) + ',';
-                str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
-                str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
+                num = num + 1;
             }
         }
+     if(num == 0)
+     {
+        alert("Please select at least file to download");
      }
-     console.log(str_coords);
+     else
+     {
+        str_coords = "Polygon ID,Latitude,Longitude\n";
+         for(let i=0; i<dataObj.features.length; i++){
+            if(checkedList[i]){
+                for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++)
+                {
+                    str_coords += 'polygon_' + (i+1) + ',';
+                    str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
+                    str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
+                }
+            }
+         }
+         console.log(str_coords);
 
-     convertedData = 'data:text/csv;charset=utf-8,' + encodeURI(str_coords);
-      // Create export
-      document.getElementById('export_csv').setAttribute('href', convertedData);
-      document.getElementById('export_csv').setAttribute('download', 'Polygons Coordinates.csv');
-      document.getElementById('export_csv').click();
+         convertedData = 'data:text/csv;charset=utf-8,' + encodeURI(str_coords);
+          // Create export
+          document.getElementById('export_csv').setAttribute('href', convertedData);
+          document.getElementById('export_csv').setAttribute('download', 'Polygons Coordinates.csv');
+          document.getElementById('export_csv').click();
+     }
 }
 
 function convert_shp()
 {
+    var num = 0;
 	// (optional) set names for feature types and zipped folder
 	var options = {
 		folder: 'Polygons Shapefile',
@@ -492,18 +507,32 @@ function convert_shp()
     var data_str = JSON.stringify(data);
     console.log("data Stringified: "+data_str);
     var dataObj = JSON.parse(data_str);
-    for(let i=0; i<dataObj.features.length; i++){
-        if(!checkedList[i]){
-            delete dataObj.features[i];
+    for(let n=0; n<checkedList.length; n++)
+    {
+        if(checkedList[n] == true)
+        {
+            num = num + 1;
         }
     }
-    data_str_after = JSON.stringify(dataObj);
-    console.log("data Stringified after removing: "+data_str_after);
-    console.log("Preparing to download shapefiles............");
-	document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
-	console.log("Shapefiles downloaded!");
-	//shapeLayers = null;
-
+    if(num == 0)
+    {
+        alert("Please select at least 1 file to download");
+    }
+    else
+    {
+        for(let i=0; i<dataObj.features.length; i++)
+        {
+            if(!checkedList[i])
+            {
+                delete dataObj.features[i];
+            }
+        }
+        data_str_after = JSON.stringify(dataObj);
+        console.log("data Stringified after removing: "+data_str_after);
+        console.log("Preparing to download shapefiles............");
+        document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
+        console.log("Shapefiles downloaded!");
+    }
 }
 
 function checkbox_status(id){
@@ -604,12 +633,9 @@ function hide_results(){
 
 window.onload=hide_results();
 
-
-
-
-function clip_by_polygon()
+function clip_by_polygon(cl_all_lat, cl_all_lon)
 {
-	var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 	//preventDefault();
 	$.ajax({
           type: "POST",
@@ -621,24 +647,21 @@ function clip_by_polygon()
 			'polygonCoordinates': polygonCoordinates,
             'name': name
           },
-		  success: function (data) {         
-            var clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
-            var clippedImageBounds = [[Math.max.apply(null,all_lat), Math.min.apply(null, all_lon)], [Math.min.apply(null, all_lat), Math.max.apply(null, all_lon)]];
-            var image = L.imageOverlay(clippedImageUrl, clippedImageBounds);
-            image.addTo(map);
-            layerControl.addOverlay(image, name);
-            //editableLayers.addLayer(image);
-            image.bringToFront();
-            //listOfImages.push(image);
-            all_lat = [];
-            all_lon = [];
-
+		  success: function (data) {
+            clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
+            clippedImageBounds = [[Math.max.apply(null,cl_all_lat), Math.min.apply(null, cl_all_lon)], [Math.min.apply(null, cl_all_lat), Math.max.apply(null, cl_all_lon)]];
+            var clippedImage = L.imageOverlay(clippedImageUrl, clippedImageBounds);
+            drawn_polygons_dict[name] = [cl_all_lat, cl_all_lon, clippedImage];
+            clippedImages.push(name);
             //Create Table Contents
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             const td_checkbox = document.createElement('td');
             const checkbox = document.createElement("INPUT");
             checkbox.setAttribute("type", "checkbox");
+            checkbox.setAttribute("name", name);
+            checkbox.setAttribute("id", name);
+            checkbox.setAttribute("onclick","show_hide_polygon(this.name)");
             checkbox.style.textAlign = "center";
 
             const text = document.createTextNode(name);
@@ -649,7 +672,6 @@ function clip_by_polygon()
             tr.appendChild(td_checkbox);
 
             document.getElementById('polyTree').appendChild(tr);
-                    
           },
           error: function (response) {
              // alert the error if any error occured
@@ -658,6 +680,28 @@ function clip_by_polygon()
           }
         });
 }
+
+function show_hide_polygon(x)
+{
+    var chk_box = document.getElementById(x);
+    if(chk_box.checked == false)
+        remove_clipped_image(chk_box.name);
+    else
+        add_clipped_image(chk_box.name);
+}
+
+function remove_clipped_image(id)
+{
+    map.removeLayer(drawn_polygons_dict[id][2]);
+}
+
+function add_clipped_image(id)
+{
+    
+    drawn_polygons_dict[id][2].addTo(map);
+    clippedImages.push(id);
+}
+
 /*$(function () {
     $("#dialog").dialog({
         autoOpen: false,
