@@ -59,7 +59,7 @@ def run_clip_polygon(request):
         current_dir = os.path.dirname(__file__)
         out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
         ststic_path = os.path.join(current_dir, 'static')
-        model_final_out = "FinalSuitabilityMapModelReclassify.tif"
+        model_final_out = "FinalSuitabilityModel.tif"
         model_final_out_path = os.path.join(out_dir, model_final_out)
         polygonRequestDir = os.path.join(ststic_path, "polygons")
         polygonRequest = request.POST.get('polygonCoordinates')

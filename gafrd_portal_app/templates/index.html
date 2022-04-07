@@ -19,6 +19,7 @@
 	<script src="https://unpkg.com/shp-write@latest/shpwrite.js"></script>
 	{% load static %}
 	<script src="{% static 'js/shpwrite.js' %}"></script>
+	<script src="{% static 'js/leaflet.geometryutil.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
@@ -362,7 +363,6 @@ function edit(){
 		  var type = e.layerType,
 			layer = e.layer,
 			layerID = layer._leaflet_id;
-			console.log("Current layerID: " + Object.values(e));
 			var today = new Date();
             var day = today.getDay();
             var date = today.getFullYear()+""+(today.getMonth()+1)+""+today.getDate();
@@ -399,9 +399,24 @@ function edit(){
 			}
 			polygonCoordinates +=temp + "]";
 		}
+			var area = L.GeometryUtil.geodesicArea(layer._latlngs[0]);
+			console.log("area: " + area);
+			const reducer = (accumulator, curr) => accumulator + curr;
+			var cen_lat = all_lat.reduce(reducer) / all_lat.length;
+			var cen_lon = all_lon.reduce(reducer) / all_lon.length;
+			
+			var feature = layer.feature = layer.feature || {}; // Initialize feature
+			feature.type = feature.type || "Feature"; // Initialize feature.type
+			var props = feature.properties = feature.properties || {}; // Initialize feature.properties
+			props.name = name;
+			props.area_km = area / 1000000.0;
+			props.area_fd = area / 4200.0;
+			props.cen_lat = cen_lat;
+			props.cen_lon = cen_lon;
+			
 		  editableLayers.addLayer(layer);
           shapeLayers.addLayer(layer);
-		    clip_by_polygon(all_lat, all_lon);
+		    clip_by_polygon(all_lat, all_lon, area);
 		    var buttons = document.getElementsByClassName('btn-action');
 		    if(buttons[0].disabled == true)
 		    {
@@ -504,6 +519,11 @@ function convert_shp()
 	};
 	var checkedList = getCheckedList();
     var data = shapeLayers.toGeoJSON();
+	//Add new fields to GeoJson object
+	var feature = {};
+	feature["properties"]={};
+	feature["properties"]["Area"]=name;
+	//--------------------------------
     var data_str = JSON.stringify(data);
     console.log("data Stringified: "+data_str);
     var dataObj = JSON.parse(data_str);
@@ -633,7 +653,7 @@ function hide_results(){
 
 window.onload=hide_results();
 
-function clip_by_polygon(cl_all_lat, cl_all_lon)
+function clip_by_polygon(cl_all_lat, cl_all_lon, area)
 {
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 	//preventDefault();
@@ -651,6 +671,9 @@ function clip_by_polygon(cl_all_lat, cl_all_lon)
             clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
             clippedImageBounds = [[Math.max.apply(null,cl_all_lat), Math.min.apply(null, cl_all_lon)], [Math.min.apply(null, cl_all_lat), Math.max.apply(null, cl_all_lon)]];
             var clippedImage = L.imageOverlay(clippedImageUrl, clippedImageBounds);
+			const reducer = (accumulator, curr) => accumulator + curr;
+			var lat_cen = cl_all_lat.reduce(reducer) / cl_all_lat.length;
+			var lon_cen = cl_all_lon.reduce(reducer) / cl_all_lon.length;
             drawn_polygons_dict[name] = [cl_all_lat, cl_all_lon, clippedImage];
             clippedImages.push(name);
             //Create Table Contents
@@ -672,6 +695,9 @@ function clip_by_polygon(cl_all_lat, cl_all_lon)
             tr.appendChild(td_checkbox);
 
             document.getElementById('polyTree').appendChild(tr);
+			
+			console.log("lat: " + cl_all_lat + ' --- ' + lat_cen);
+			console.log("lon : " + cl_all_lon + ' --- ' + lon_cen);
           },
           error: function (response) {
              // alert the error if any error occured
