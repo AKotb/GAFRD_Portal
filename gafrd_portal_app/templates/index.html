@@ -246,6 +246,7 @@ $(document).on({
 	var curSelectedLayer = "";
     var clippedImages = [];
     var drawn_polygons_dict = {};
+	var polygon_values_list = [];
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -399,6 +400,7 @@ function edit(){
 			}
 			polygonCoordinates +=temp + "]";
 		}
+			clip_by_polygon(all_lat, all_lon);
 			var area = L.GeometryUtil.geodesicArea(layer._latlngs[0]);
 			console.log("area: " + area);
 			const reducer = (accumulator, curr) => accumulator + curr;
@@ -413,10 +415,12 @@ function edit(){
 			props.area_fd = area / 4200.0;
 			props.cen_lat = cen_lat;
 			props.cen_lon = cen_lon;
+			props.min = polygon_values_list[1];
+			props.max = polygon_values_list[2];
+			props.mean = polygon_values_list[3];
 			
 		  editableLayers.addLayer(layer);
           shapeLayers.addLayer(layer);
-		    clip_by_polygon(all_lat, all_lon, area);
 		    var buttons = document.getElementsByClassName('btn-action');
 		    if(buttons[0].disabled == true)
 		    {
@@ -486,15 +490,20 @@ function convert_csv()
      }
      else
      {
-        str_coords = "Polygon ID,Latitude,Longitude\n";
+        str_coords = "ID,Polygon Name,Area KM^2,Area Feddan,Centroid Lat, Centroid Lon, Mean\n";
          for(let i=0; i<dataObj.features.length; i++){
             if(checkedList[i]){
-                for(let j=0; j<dataObj.features[i].geometry.coordinates[0].length; j++)
+                /*for(let j=0; j<dataObj.features[i].properties.length; j++)
                 {
-                    str_coords += 'polygon_' + (i+1) + ',';
-                    str_coords += dataObj.features[i].geometry.coordinates[0][j][0] + ',';
-                    str_coords += dataObj.features[i].geometry.coordinates[0][j][1] + '\n';
-                }
+
+                }*/
+                str_coords += (i+1) + ',';
+                str_coords +=  dataObj.features[i].properties.name + ',';
+                str_coords += dataObj.features[i].properties.area_km+ ',';
+                str_coords += dataObj.features[i].properties.area_fd+ ',';
+                str_coords += dataObj.features[i].properties.cen_lat+ ',';
+                str_coords += dataObj.features[i].properties.cen_lon+ ',';
+				str_coords += dataObj.features[i].properties.mean+ '\n';
             }
          }
          console.log(str_coords);
@@ -519,12 +528,7 @@ function convert_shp()
 	};
 	var checkedList = getCheckedList();
     var data = shapeLayers.toGeoJSON();
-	//Add new fields to GeoJson object
-	var feature = {};
-	feature["properties"]={};
-	feature["properties"]["Area"]=name;
-	//--------------------------------
-    var data_str = JSON.stringify(data);
+	var data_str = JSON.stringify(data);
     console.log("data Stringified: "+data_str);
     var dataObj = JSON.parse(data_str);
     for(let n=0; n<checkedList.length; n++)
@@ -548,7 +552,6 @@ function convert_shp()
             }
         }
         data_str_after = JSON.stringify(dataObj);
-        console.log("data Stringified after removing: "+data_str_after);
         console.log("Preparing to download shapefiles............");
         document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
         console.log("Shapefiles downloaded!");
@@ -653,7 +656,7 @@ function hide_results(){
 
 window.onload=hide_results();
 
-function clip_by_polygon(cl_all_lat, cl_all_lon, area)
+function clip_by_polygon(cl_all_lat, cl_all_lon)
 {
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 	//preventDefault();
@@ -667,8 +670,10 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, area)
 			'polygonCoordinates': polygonCoordinates,
             'name': name
           },
-		  success: function (data) {
-            clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
+		  success: function (res) {
+            polygon_values_list = res.split(",");
+			
+			clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+'.png';
             clippedImageBounds = [[Math.max.apply(null,cl_all_lat), Math.min.apply(null, cl_all_lon)], [Math.min.apply(null, cl_all_lat), Math.max.apply(null, cl_all_lon)]];
             var clippedImage = L.imageOverlay(clippedImageUrl, clippedImageBounds);
 			const reducer = (accumulator, curr) => accumulator + curr;
@@ -695,9 +700,6 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, area)
             tr.appendChild(td_checkbox);
 
             document.getElementById('polyTree').appendChild(tr);
-			
-			console.log("lat: " + cl_all_lat + ' --- ' + lat_cen);
-			console.log("lon : " + cl_all_lon + ' --- ' + lon_cen);
           },
           error: function (response) {
              // alert the error if any error occured

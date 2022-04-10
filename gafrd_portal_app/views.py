@@ -1,4 +1,5 @@
 import os.path
+from django.http import HttpResponse
 
 # Create your views here.
 from django.shortcuts import render
@@ -71,7 +72,8 @@ def run_clip_polygon(request):
         print("Type is ", type(polygonRequest))
         polygonRequestName = request.POST.get('name')
         print("polygonRequestName: ", polygonRequestName)
-        TSModel.clip_using_polygon(model_final_out_path, polygonRequest, polygonRequestDir, polygonRequestName)
+        contents = TSModel.clip_using_polygon(model_final_out_path, polygonRequest, polygonRequestDir, polygonRequestName)
 
         # return user to required page
-        return render(request, 'index.html')
+        # return render(request, 'index.html')
+        return HttpResponse(contents)

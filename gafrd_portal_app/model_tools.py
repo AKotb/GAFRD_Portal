@@ -2,6 +2,8 @@ import numpy as np
 from PIL import Image
 from osgeo import gdal
 from osgeo import ogr, osr
+import matplotlib.pyplot as plt
+import matplotlib.colors as clr
 
 
 class TSModel:
@@ -441,6 +443,33 @@ class TSModel:
         ds = None
 
     @staticmethod
+    def get_cr(fullPath):
+        cr_list = ['red', 'yellow', 'cyan', 'blue']
+        img = Image.open(fullPath)
+        img = np.array(img)
+        data_pixels = img[img != 10000.0]
+
+        data_mean = data_pixels.mean()
+        data_min = data_pixels.min()
+        data_max = data_pixels.max()
+        print(data_mean, data_min, data_max)
+        img[img == 10000.0] = np.nan
+
+        cmap = clr.LinearSegmentedColormap.from_list('custom', cr_list, N=256)
+
+        plt.imsave(fullPath.replace('.tif', '.png'), img, cmap=cmap, vmin=data_min, vmax=data_max)
+
+        gradient = np.linspace(0, 1, 256)
+        print(gradient.shape)
+        for g in range(5):
+            gradient = np.vstack((gradient, gradient))
+        print(gradient.shape)
+
+        plt.imsave(fullPath.replace('.tif', '-legend.jpg'), gradient, cmap=cmap)
+
+        return [data_min, data_max, data_mean]
+
+    @staticmethod
     def clip_using_polygon(in_ras, in_clipper, area_clipped_dir, area_clipped_name):
         """
         Clip model ouput raster using list of coordinates come from request.
@@ -454,7 +483,6 @@ class TSModel:
         print("in_clipper:\n", in_clipper)
         print("area_clipped_dir:\n", area_clipped_dir)
         print("area_clipped_name:\n", area_clipped_name)
-        nan_value = -3.4028230607370965e+38  # 2**16 - 1
         nan_value = 10000
 
         # set up the shapefile driver
@@ -492,56 +520,24 @@ class TSModel:
         # Save and close the data source
         data_source = None
 
-        OutTile = gdal.Warp("{}/{}.tif".format(area_clipped_dir, area_clipped_name),
+        out_ras = "{}/{}.tif".format(area_clipped_dir, area_clipped_name)
+
+        OutTile = gdal.Warp(out_ras,
                             in_ras, cutlineDSName="{}/{}.shp".format(area_clipped_dir, area_clipped_name),
                             cropToCutline=True, dstNodata=nan_value)
         OutTile = None
 
-        temp = gdal.Open("{}/{}.tif".format(area_clipped_dir, area_clipped_name))
-        cols, rows = temp.RasterXSize, temp.RasterYSize
-        print('inside clip: out clipped: \n{} \ndims: cols = {}, rows = {}'.format(area_clipped_name, cols, rows))
-        band = temp.GetRasterBand(1)
-        bmin, bmax = band.ComputeRasterMinMax(1)
-        print(bmin, bmax)
-        band_arr = band.ReadAsArray()
-        print(nan_value)
-        print(band_arr.shape)
-        print(np.min(band_arr), np.max(band_arr))
-        # scale ascending
-        scaled = 255 * (band_arr - bmin) / (bmax - bmin)
-        # print(np.min(scaled), np.max(scaled))
-        scaled[np.where(scaled > 255)] = 255
-        scaled[np.where(scaled < 0)] = 0
-        scaled = scaled.astype(int)
-        # print(np.min(scaled), np.max(scaled))
-        scaled2 = 255 - scaled
-        # print(np.min(scaled2), np.max(scaled2))
-        # print(scaled[25, 57], scaled2[25, 57])
-        scaled3 = 0 * scaled
-        scaled4 = 255 + scaled3
-        scaled4[np.where(band_arr == nan_value)] = 0
-        img = scaled
-
-        img = np.zeros((scaled.shape[0], scaled.shape[1], 4), dtype=np.uint8)
-        img[:, :, 0] = scaled
-        img[:, :, 1] = scaled2
-        img[:, :, 2] = scaled3
-        img[:, :, 3] = scaled4
-        print(scaled2.shape, img.shape)
-        imgFile = Image.fromarray(img)
-        imgFile.save("{}/{}.png".format(area_clipped_dir, area_clipped_name))
-
-        imgLeg = np.zeros([100, 257 - 1, 3], dtype=np.uint8)
-        for n in range(257 - 1):
-            imgLeg[:, n] = [255 - n, n, 0]
-        imgLegFile = Image.fromarray(imgLeg)
-        imgLegFile.save("{}/{}-legend.jpg".format(area_clipped_dir, area_clipped_name))
+        out_params = TSModel.get_cr(out_ras)
 
         txtInfo = open("{}/{}-info.txt".format(area_clipped_dir, area_clipped_name), "w+")
         txtInfo.write("name:{}\n".format(area_clipped_name))
-        txtInfo.write("minValue:{}\n".format(bmin))
-        txtInfo.write("maxValue:{}\n".format(bmax))
+        txtInfo.write("minValue:{}\n".format(out_params[0]))
+        txtInfo.write("maxValue:{}\n".format(out_params[1]))
+        txtInfo.write("meanValue:{}\n".format(out_params[2]))
         txtInfo.write("bottom:{}\n".format(boundingBox[0]))
         txtInfo.write("top:{}\n".format(boundingBox[1]))
         txtInfo.write("left:{}\n".format(boundingBox[2]))
         txtInfo.write("right:{}\n".format(boundingBox[3]))
+
+        return ",".join([area_clipped_name] + [str(x) for x in out_params])
+
