@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 from PIL import Image
 from osgeo import gdal
@@ -75,7 +77,7 @@ class TSModel:
         ds = gdal.Open(in_raster)
         band = ds.GetRasterBand(1)
         ndv = band.GetNoDataValue()
-        print('inside is null: ndv = ', ndv)
+        #print('inside is null: ndv = ', ndv)
         if ndv is None:
             ndv = 10000
             # print('\tinside is null: ndv becomes 10000')
@@ -452,7 +454,7 @@ class TSModel:
         data_mean = data_pixels.mean()
         data_min = data_pixels.min()
         data_max = data_pixels.max()
-        print(data_mean, data_min, data_max)
+        print(f"mean: {data_mean}, min: {data_min}, max: {data_max}")
         img[img == 10000.0] = np.nan
 
         cmap = clr.LinearSegmentedColormap.from_list('custom', cr_list, N=256)
@@ -460,17 +462,15 @@ class TSModel:
         plt.imsave(fullPath.replace('.tif', '.png'), img, cmap=cmap, vmin=data_min, vmax=data_max)
 
         gradient = np.linspace(0, 1, 256)
-        print(gradient.shape)
         for g in range(5):
             gradient = np.vstack((gradient, gradient))
-        print(gradient.shape)
 
-        plt.imsave(fullPath.replace('.tif', '-legend.jpg'), gradient, cmap=cmap)
+        plt.imsave(fullPath.replace('.tif', '_legend.jpg'), gradient, cmap=cmap)
 
         return [data_min, data_max, data_mean]
 
     @staticmethod
-    def clip_using_polygon(in_ras, in_clipper, area_clipped_dir, area_clipped_name):
+    def clip_using_polygon(in_ras_list, out_dir, in_clipper, area_clipped_dir, area_clipped_name):
         """
         Clip model ouput raster using list of coordinates come from request.
 
@@ -479,9 +479,6 @@ class TSModel:
         :param area_clipped_dir: A fullpath for clipped area tif file.
         :param out_clipped_ras: A filename for clipped area - shp for boundary and tif for data.
         """
-        print("in_ras:\n", in_ras)
-        print("in_clipper:\n", in_clipper)
-        print("area_clipped_dir:\n", area_clipped_dir)
         print("area_clipped_name:\n", area_clipped_name)
         nan_value = 10000
 
@@ -519,27 +516,20 @@ class TSModel:
 
         # Save and close the data source
         data_source = None
+        out_params = ""
+        for i in in_ras_list:
+            in_ras = os.path.join(out_dir, i)
+            out_ras = "{}/{}_{}".format(area_clipped_dir, area_clipped_name, i)
 
-        out_ras = "{}/{}.tif".format(area_clipped_dir, area_clipped_name)
+            OutTile = gdal.Warp(out_ras,
+                                in_ras, cutlineDSName="{}/{}.shp".format(area_clipped_dir, area_clipped_name),
+                                cropToCutline=True, dstNodata=nan_value)
+            OutTile = None
+            cur_params = TSModel.get_cr(out_ras)
+            out_params += i[:-4] + "," + ",".join([str(x) for x in cur_params]) + ","
 
-        OutTile = gdal.Warp(out_ras,
-                            in_ras, cutlineDSName="{}/{}.shp".format(area_clipped_dir, area_clipped_name),
-                            cropToCutline=True, dstNodata=nan_value)
-        OutTile = None
-
-        out_params = TSModel.get_cr(out_ras)
-
-        txtInfo = open("{}/{}-info.txt".format(area_clipped_dir, area_clipped_name), "w+")
-        txtInfo.write("name:{}\n".format(area_clipped_name))
-        txtInfo.write("minValue:{}\n".format(out_params[0]))
-        txtInfo.write("maxValue:{}\n".format(out_params[1]))
-        txtInfo.write("meanValue:{}\n".format(out_params[2]))
-        txtInfo.write("bottom:{}\n".format(boundingBox[0]))
-        txtInfo.write("top:{}\n".format(boundingBox[1]))
-        txtInfo.write("left:{}\n".format(boundingBox[2]))
-        txtInfo.write("right:{}\n".format(boundingBox[3]))
-
-        return ",".join([area_clipped_name] + [str(x) for x in out_params])
+        print("get_cr out_params: ", out_params)
+        return out_params[:-1]
 
 
 if __name__ == '__main__':
