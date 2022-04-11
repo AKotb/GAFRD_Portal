@@ -1,7 +1,7 @@
 import cv2
 
-#file_name = r"F:\NARSS\Fishers_Project\GAFRD_Portal\gafrd_portal_app\static\model_results\FinalRestrictionModel.png"
-file_name = r"D:\NARSS\Fishers_Project\GAFRD_Portal\gafrd_portal_app\static\model_results\FinalRestrictionModel.png"
+#file_name = r"C:/Users/ahmed.kotb/PycharmProjects/GAFRD_Portal/gafrd_portal_app/static/model_results/FinalSuitabilityModel.tif"
+file_name = r"C:/Users/ahmed.kotb/PycharmProjects/GAFRD_Portal/gafrd_portal_app/static/model_results/FinalRestrictionModel.png"
 src = cv2.imread(file_name, 1)
 tmp = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 _, alpha = cv2.threshold(tmp, 0, 255, cv2.THRESH_BINARY)

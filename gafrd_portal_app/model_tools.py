@@ -541,3 +541,8 @@ class TSModel:
 
         return ",".join([area_clipped_name] + [str(x) for x in out_params])
 
+
+if __name__ == '__main__':
+    img_path = "C:/Users/ahmed.kotb/PycharmProjects/GAFRD_Portal/gafrd_portal_app/static/model_results/FinalSuitabilityModel.tif"
+    TSModel.get_cr(img_path)
+
