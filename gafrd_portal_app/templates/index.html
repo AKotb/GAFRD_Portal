@@ -419,7 +419,6 @@ function edit(){
 		    }
 		    tempArray = null;
 			temp = "";
-			//var imageLegendUrl = "../static/polygons/"+name+"_"+polygon_values_list[0]+"_legend.jpg";
 			polygonCoordinates = "";
 		});
 
@@ -429,7 +428,6 @@ function edit(){
 				layers.eachLayer(function(layer) {
 					countOfEditedLayers++;
 				});
-				console.log("Edited " + countOfEditedLayers + " layers");
 			});
 
 		map.on('draw:deleted', function(e){
@@ -478,11 +476,7 @@ function convert_csv()
         str_coords = "ID,Polygon Name,Area KM^2,Area Feddan,Centroid Lat, Centroid Lon," + polygon_values_list[0] + "_mean,"+ polygon_values_list[4] + "_mean,"+ polygon_values_list[8] + "_mean,"+ polygon_values_list[12] + "_mean\n";
          for(let i=0; i<dataObj.features.length; i++){
             if(checkedList[i]){
-                /*for(let j=0; j<dataObj.features[i].properties.length; j++)
-                {
-
-                }*/
-                str_coords += (i+1) + ',';
+				str_coords += (i+1) + ',';
                 str_coords +=  dataObj.features[i].properties.name + ',';
                 str_coords += dataObj.features[i].properties.area_km+ ',';
                 str_coords += dataObj.features[i].properties.area_fd+ ',';
@@ -518,7 +512,6 @@ function convert_shp()
 	var checkedList = getCheckedList();
     var data = shapeLayers.toGeoJSON();
 	var data_str = JSON.stringify(data);
-    console.log("data Stringified: "+data_str);
     var dataObj = JSON.parse(data_str);
     for(let n=0; n<checkedList.length; n++)
     {
@@ -541,9 +534,7 @@ function convert_shp()
             }
         }
         data_str_after = JSON.stringify(dataObj);
-        console.log("Preparing to download shapefiles............");
         document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
-        console.log("Shapefiles downloaded!");
     }
 }
 
@@ -648,7 +639,6 @@ window.onload=hide_results();
 function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
 {
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-	//preventDefault();
 	$.ajax({
           type: "POST",
           url: "{% url 'run_clip_polygon' %}",
@@ -661,7 +651,11 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
           },
 		  success: function (res) {
             polygon_values_list = res.split(",");
-			console.log("Inside polygon_values_list: " + polygon_values_list);
+            for(let x = 0; x < polygon_values_list.length; x++){
+                if(x % 4 != 0){
+                    polygon_values_list[x] = parseFloat(polygon_values_list[x]);
+                }
+            }
 			clippedImageUrl = 'http://127.0.0.1:8000/static/polygons/'+name+"_"+polygon_values_list[0]+'.png';
             clippedImageBounds = [[Math.max.apply(null,cl_all_lat), Math.min.apply(null, cl_all_lon)], [Math.min.apply(null, cl_all_lat), Math.max.apply(null, cl_all_lon)]];
             var clippedImage = L.imageOverlay(clippedImageUrl, clippedImageBounds);
@@ -669,7 +663,6 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
             clippedImages.push(name);
 
             area = L.GeometryUtil.geodesicArea(cur_layer._latlngs[0]);
-			console.log("area: " + area);
 			const reducer = (accumulator, curr) => accumulator + curr;
 			var cen_lat = cl_all_lat.reduce(reducer) / cl_all_lat.length;
 			var cen_lon = cl_all_lon.reduce(reducer) / cl_all_lon.length;
@@ -682,7 +675,6 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
 			props.area_fd = area / 4200.0;
 			props.cen_lat = cen_lat;
 			props.cen_lon = cen_lon;
-			console.log("Outside Ajax Response: " + polygon_values_list);
 
 			props[polygon_values_list[0] + "_min"] = polygon_values_list[1];
 			props[polygon_values_list[0] + "_max"] = polygon_values_list[2];
@@ -697,9 +689,8 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
 			props[polygon_values_list[12] + "_max"] = polygon_values_list[14];
 			props[polygon_values_list[12] + "_mean"] = polygon_values_list[15];
 
-            //popupContent = '<h4>Name: </h4>' + name + "<br><h3>Area: </h3>" + area;
-            popupContent = "<table><tr><td><h5 style='color: rgb(47, 85, 151);'>Name: </h5></td><td>"+name+"</td></tr><tr>    <td><h5 style='color: rgb(47, 85, 151);'>Area (KM^2): </h5></td><td>"+props.area_km+"</td></tr><tr>              <td><h5 style='color: rgb(47, 85, 151);'>Centroid Lat: </h5></td><td>"+cen_lat+"</td></tr><tr><td><h5 style='color: rgb(47, 85, 151);'>Centroid Lon: </h5></td><td>"+cen_lon+"</td> </tr><tr><td><h5 style='color: rgb(47, 85, 151);'>FinalSuitabilityModel Mean:</h5></td><td>"+polygon_values_list[3]+"</td></tr><tr><td><h5 style='color: rgb(47, 85, 151);'>SoilSubModel Mean:</h5></td><td>"+polygon_values_list[7]+"</td></tr><tr><td><h5 style='color: rgb(47, 85, 151);'>SocioEconomic Mean:</h5></td><td>"+polygon_values_list[11]+"</td></tr><tr><td><h5 style='color: rgb(47, 85, 151);'>WaterAvailabilitySubModel Mean:</h5></td><td>"+polygon_values_list[15]+"</td></tr></table>"
-		    cur_layer.bindPopup(popupContent);
+            popupContent = build_popup(props, polygon_values_list);
+            cur_layer.bindPopup(popupContent);
 
             //Create Table Contents
             const tr = document.createElement('tr');
@@ -750,21 +741,19 @@ function add_clipped_image(id)
     clippedImages.push(id);
 }
 
-/*$(function () {
-    $("#dialog").dialog({
-        autoOpen: false,
-        modal: true,
-        title: "Details",
-        buttons:
-                {
-                    Close: function () {
-                        //window.location.reload();
-                        $(this).dialog('close');
-                    }
-                    
-                }
-    });});
-*/
+function build_popup(props, values_list){
+    var popup_content = "<h3 class='popup-title'>"+props.name+"</h3><table style='width:100%;'>"+
+                "<tr style='width:100%;'><td class='popup-key'>Area (KM^2)</td><td class='popup-val'>: "+(Math.round((props.area_km + Number.EPSILON) * 1000) / 1000)+"</td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>Centroid Lat</td><td class='popup-val'>: "+(Math.round((props.cen_lat + Number.EPSILON) * 100000) / 100000)+"</td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>Centroid Lon</td><td class='popup-val'>: "+(Math.round((props.cen_lon + Number.EPSILON) * 100000) / 100000)+"</td></tr>"+
+                "<tr><td colspan='2'><h5 class='popup-subtitle'>Mean of Model Outputs</h5></td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>FinalSuitabilityModel</td><td class='popup-val'>: "+(Math.round((values_list[3] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>SoilSubModel</td><td class='popup-val'>: "+(Math.round((values_list[7] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>SocioEconomic</td><td class='popup-val'>: "+(Math.round((values_list[11] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
+                "<tr style='width:100%;'><td class='popup-key'>WaterAvailabilitySubModel</td><td class='popup-val'>: "+(Math.round((values_list[15] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
+                "</table>";
+    return popup_content;
+}
 
 var toggler = document.getElementsByClassName("caret");
 var i;

@@ -61,12 +61,10 @@ def run_clip_polygon(request):
         out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
         ststic_path = os.path.join(current_dir, 'static')
         model_final_out_files = ["FinalSuitabilityModel.tif", "SoilSubModel.tif", "SocioEconomic.tif", "WaterAvailabilitySubModel.tif"]
-        #model_final_out_path = os.path.join(out_dir, model_final_out)
         polygonRequestDir = os.path.join(ststic_path, "polygons")
         polygonRequest = request.POST.get('polygonCoordinates')
         polygonRequest = eval(polygonRequest)
         polygonRequestName = request.POST.get('name')
-        print("polygonRequestName: ", polygonRequestName)
         contents = TSModel.clip_using_polygon(model_final_out_files, out_dir, polygonRequest, polygonRequestDir, polygonRequestName)
 
         # return user to required page
