@@ -207,6 +207,7 @@
                     </th>
                     <th>
                         <button class="btn-action" onclick="convert_csv()" disabled="true"><i class="fa fa-download"></i> CSV</button>
+                        {% csrf_token %}
                         <button class="btn-action" onclick="convert_shp()" disabled="true"><i class="fa fa-download"></i> SHP</button>
                     </th>
                 </tr>
@@ -502,13 +503,8 @@ function convert_csv()
 function convert_shp()
 {
     var num = 0;
-	// (optional) set names for feature types and zipped folder
-	var options = {
-		folder: 'Polygons Shapefile',
-		types: {
-			polygon: 'Exported Polygons'
-		}
-	};
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+	
 	var checkedList = getCheckedList();
     var data = shapeLayers.toGeoJSON();
 	var data_str = JSON.stringify(data);
@@ -534,7 +530,27 @@ function convert_shp()
             }
         }
         data_str_after = JSON.stringify(dataObj);
-        document.getElementById('export_shp').setAttribute('href', 'data:application/zip;base64,' + shpwrite.download(dataObj, options));
+        $.ajax({
+          type: "POST",
+          url: "{% url 'download_shapefile' %}",
+		  headers:{
+			  "X-CSRFToken": csrftoken
+		  },
+          data: {
+            'geoJson': data_str_after
+          },
+          success:function (res){
+            console.log(res);
+            var download_link = 'http://127.0.0.1:8000/static/drawn_layers/'+res;
+            document.getElementById('export_shp').setAttribute('href', download_link);
+            document.getElementById('export_shp').click();
+          },
+          error: function (response) {
+             // alert the error if any error occured
+             console.log("Ajax Request Error");
+             console.log(response);
+          }
+        });
     }
 }
 

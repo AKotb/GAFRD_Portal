@@ -1,3 +1,4 @@
+import base64
 import os.path
 from django.http import HttpResponse
 
@@ -6,7 +7,9 @@ from django.shortcuts import render
 
 from gafrd_portal_app.model_tools import TSModel
 from gafrd_portal_app.run import ExecuteModel
-
+import geopandas as gpd
+from datetime import datetime
+import zipfile
 
 def index(request):
     """View function for home page of site."""
@@ -70,3 +73,35 @@ def run_clip_polygon(request):
         # return user to required page
         # return render(request, 'index.html')
         return HttpResponse(contents)
+def download_shapefile(request):
+    current_dir = os.path.dirname(__file__)
+    download_dir = os.path.join(current_dir, 'static/drawn_layers')
+    if request.is_ajax and request.method == "POST":
+        geoJson = request.POST.get('geoJson')
+        compressed_shp_file = create_shp(download_dir, geoJson)
+
+        return HttpResponse(compressed_shp_file)
+
+def create_shp(out_dir, str_geojson):
+    datetime_str = datetime.now().strftime('%Y%m%d%H%M%S')
+    cur_file = f"drawn_layers_{datetime_str}"
+    shp_dir = os.path.join(out_dir, cur_file)
+    if not os.path.exists(shp_dir):
+        os.mkdir(shp_dir)
+
+    gdf = gpd.read_file(str_geojson)
+    gdf.to_file(os.path.join(shp_dir, f"{cur_file}.shp"))
+
+    f_out = zipfile.ZipFile(f"{shp_dir}.zip", "w", zipfile.ZIP_DEFLATED)
+    abs_src = os.path.abspath(shp_dir)
+    for dirname, subdirs, files in os.walk(shp_dir):
+        for filename in files:
+            absname = os.path.abspath(os.path.join(dirname, filename))
+            arcname = absname[len(abs_src) + 1:]
+            print(f"zipping {os.path.join(dirname, filename)} as {arcname}")
+            f_out.write(absname, arcname)
+    f_out.close()
+    '''with open(f"{shp_dir}.zip", "rb") as f:
+        bytes = f.read()
+        encoded = base64.b64encode(bytes)'''
+    return f"{cur_file}.zip"
