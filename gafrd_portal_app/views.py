@@ -63,7 +63,7 @@ def run_clip_polygon(request):
         current_dir = os.path.dirname(__file__)
         out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
         ststic_path = os.path.join(current_dir, 'static')
-        model_final_out_files = ["FinalSuitabilityModel.tif", "SoilSubModel.tif", "SocioEconomic.tif", "WaterAvailabilitySubModel.tif"]
+        model_final_out_files = ["FinalSuitabilityMapModel.tif", "SoilSubModel.tif", "SocioEconomic.tif", "WaterAvailabilitySubModel.tif"]
         polygonRequestDir = os.path.join(ststic_path, "polygons")
         polygonRequest = request.POST.get('polygonCoordinates')
         polygonRequest = eval(polygonRequest)
