@@ -87,10 +87,10 @@
                     </div>
                 </div>
             </div>
-            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:210px; height: 25px; display: block; ">
+            <div id="legend_div" style="position: relative; float: right; bottom: 100px; right: 20px; z-index:2000; width:210px; height: 25px; display: block; ">
                 <img id="legend_img_src" src="" alt="" width="200px;"/>
             </div>
-            <div id="legend_min_max_div" style="color: white; position: relative; float: right; top: -245px; left: 200px; z-index:2000; width:200px; display: block; ">
+            <div id="legend_min_max_div" style="color: white; position: relative; float: right; bottom: 140px; right: -180px; z-index:2000; width:200px; display: block;">
             </div>
         </div>
     </div>
@@ -818,7 +818,7 @@ function read_min_max_files(file)
             {
                 var allText = rawFile.responseText;
                 const minMaxValue = allText.split(/\r?\n/);
-                legend_min_max_values = "<p style='float: left; background-color: blue;'>"+minMaxValue[0]+"</p><p style='float: right; background-color: blue;'>"+minMaxValue[1]+"</p>"
+                legend_min_max_values = "<p style='float: left; background-color: rgb(0,0,0, 0.5);'>"+minMaxValue[0]+"</p><p style='float: right; background-color: rgb(0,0,0, 0.5);'>"+minMaxValue[1]+"</p>"
             }
         }
     }
