@@ -463,6 +463,6 @@ class TSModel:
 
 
 if __name__ == '__main__':
-    img_path = "C:/Users/ahmed.kotb/PycharmProjects/GAFRD_Portal/gafrd_portal_app/static/model_results/FinalSuitabilityModel.tif"
+    img_path = r"C:\Users\ahmed.kotb\PycharmProjects\GAFRD_Portal\gafrd_portal_app\static\Model_Data\outputs\Egypt\FinalSuitabilityMapModel.tif"
     TSModel.get_cr(img_path)
 

@@ -4,4 +4,5 @@ numpy~=1.21.4
 opencv-python~=4.5.4.60
 Pillow~=9.0.0
 matplotlib~=3.5.1
-geopandas=~0.10.2
+fiona~=1.8.21
+geopandas~=0.10.2

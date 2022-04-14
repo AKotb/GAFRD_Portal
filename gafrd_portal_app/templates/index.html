@@ -87,8 +87,10 @@
                     </div>
                 </div>
             </div>
-            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:205px; height: 150px; display: block; ">
+            <div id="legend_div" style="position: relative; float: right; top: -210px;  z-index:2000; width:210px; height: 25px; display: block; ">
                 <img id="legend_img_src" src="" alt="" width="200px;"/>
+            </div>
+            <div id="legend_min_max_div" style="color: white; position: relative; float: right; top: -245px; left: 200px; z-index:2000; width:200px; display: block; ">
             </div>
         </div>
     </div>
@@ -187,16 +189,16 @@
             Reclassify</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
                 style="float: left;">Final Suitability Map Model</label><br/> -->
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityModel')" id="FinalSuitabilityModel"/><label
-                style="float: left;">Final Suitability Model</label><br/>
+            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalSuitabilityMapModel')" id="FinalSuitabilityMapModel"/><label
+                style="float: left;">Final Suitability Map Model</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SoilSubModel')" id="SoilSubModel"/><label
                 style="float: left;">Soil Sub-Model</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('SocioEconomic')" id="SocioEconomic"/><label
                 style="float: left;">Socio Economic</label><br/>
             <input name="result_checkbox" type="checkbox" onclick="checkbox_status('WaterAvailabilitySubModel')"
                    id="WaterAvailabilitySubModel"/><label style="float: left;">Water Availability Sub-Model</label><br/>
-            <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
-                style="float: left;">Final Restriction Model</label><br/>
+            <!-- <input name="result_checkbox" type="checkbox" onclick="checkbox_status('FinalRestrictionModel')" id="FinalRestrictionModel"/><label
+                style="float: left;">Final Restriction Model</label><br/> -->
             <table id="polyTree">
                 <tr>
                     <!--<th>
@@ -235,6 +237,7 @@ $(document).on({
 	var image;
 	var listOfImages = [];
 	var listOfLegendImages = [];
+    var listOfLegendMinMaxValues = [];
 	var data;
 	var convertedData;
 	var shpdata;
@@ -565,10 +568,10 @@ function checkbox_status(id){
 }
 
 function load_results(id){
-    var top_eg = 31.6102614885
-    var left_eg = 29.9709819819
-    var right_eg = 32.0209819819
-    var bottom_eg = 30.6292614885
+    var top_eg = 31.5788540066
+    var left_eg = 30.0000142271
+    var right_eg = 32.0100142271
+    var bottom_eg = 30.6618540066
 
     // Extent for South Africa Data
     /*
@@ -578,7 +581,7 @@ function load_results(id){
     var bottom_sa = -25.436225
     */
 
-    var imageUrl = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
+    var imageUrl = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.png';
     //var imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]]; // for south africa data
     var imageBounds = [[top_eg, right_eg], [bottom_eg, left_eg]];
 	image = L.imageOverlay(imageUrl, imageBounds);
@@ -590,7 +593,7 @@ function load_results(id){
 }
 
 function remove_results(id){
-	var checkedURL = 'http://127.0.0.1:8000/static/model_results/'+id+'.png';
+	var checkedURL = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.png';
 	listOfImages.forEach(function(entry) {
     	if(checkedURL === entry["_url"]){
     		map.removeLayer(entry);
@@ -601,11 +604,14 @@ function remove_results(id){
     	}
 	});
 	remove_legend_img(id);
+    remove_legend_minmaxvalues(id);
 }
 
 function load_legend_img(id){
-    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/legend/'+id+'.png';
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'_legend.jpg';
     listOfLegendImages.push(id);
+    document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.tif.txt');
+    listOfLegendMinMaxValues.push(id);
 }
 
 function remove_legend_img(id){
@@ -617,12 +623,33 @@ function remove_legend_img(id){
     		}
     	}
 	});
-    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/legend/'+listOfLegendImages.at(-1)+'.png';
+    if (listOfLegendImages.length === 0) {
+        document.getElementById("legend_img_src").src = '';   
+    }else{
+        document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+listOfLegendImages.at(-1)+'_legend.jpg';   
+    }
+}
+
+function remove_legend_minmaxvalues(id){
+    listOfLegendMinMaxValues.forEach(function(entry) {
+    	if(id === entry){
+    		var index = listOfLegendMinMaxValues.indexOf(entry);
+    		if (index > -1) {
+    			listOfLegendMinMaxValues.splice(index, 1);
+    		}
+    	}
+	});
+    if (listOfLegendMinMaxValues.length === 0) {
+        document.getElementById("legend_min_max_div").innerHTML = '';
+    }else{
+        document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+listOfLegendMinMaxValues.at(-1)+'.tif.txt');
+    }
 }
 
 function display_results(){
 	document.getElementById("results_div").style.display = 'block';
 	document.getElementById("legend_div").style.display = 'block';
+    document.getElementById("legend_min_max_div").style.display = 'block';
 	document.getElementById("parameters_div").style.display = 'none';
 	//map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8); //for South Africa
 	map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9);
@@ -631,6 +658,7 @@ function display_results(){
 function hide_results(){
 	document.getElementById("results_div").style.display = 'none';
 	document.getElementById("legend_div").style.display = 'none';
+    document.getElementById("legend_min_max_div").style.display = 'none';
 	document.getElementById("parameters_div").style.display = 'block';
 
 	var result_checkboxes = document.getElementsByName('result_checkbox');
@@ -643,8 +671,10 @@ function hide_results(){
 	});
 
 	document.getElementById("legend_img_src").src="";
+    document.getElementById("legend_min_max_div").innerHTML="";
 
     listOfLegendImages=[];
+    listOfLegendMinMaxValues=[];
     listOfImages=[];
 
 	map.setView([27.3, 30.8], 6);
@@ -769,6 +799,27 @@ function build_popup(props, values_list){
                 "<tr style='width:100%;'><td class='popup-key'>WaterAvailabilitySubModel</td><td class='popup-val'>: "+(Math.round((values_list[15] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
                 "</table>";
     return popup_content;
+}
+
+function read_min_max_files(file)
+{
+    var legend_min_max_values;
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                const minMaxValue = allText.split(/\r?\n/);
+                legend_min_max_values = "<p style='float: left; background-color: blue;'>"+minMaxValue[0]+"</p><p style='float: right; background-color: blue;'>"+minMaxValue[1]+"</p>"
+            }
+        }
+    }
+    rawFile.send(null);
+    return legend_min_max_values;
 }
 
 var toggler = document.getElementsByClassName("caret");

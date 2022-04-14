@@ -3,6 +3,7 @@
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 from users.forms import CustomUserCreationForm
 
@@ -19,6 +20,8 @@ def register(request):
         )
     else:
         form = CustomUserCreationForm(request.POST)
+        userName = request.POST.get('username')
+        print("============ UserName: %s" %(userName))
         if form.is_valid():
             user = form.save()
             login(request, user)

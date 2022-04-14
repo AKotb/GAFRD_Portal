@@ -131,4 +131,37 @@ class ExecuteModel:
         print("Run Tool 30")
         TSModel.raster_reclassify(data_outputs["TO29"], reclassify_list["R30"], data_outputs["TO30"])
 
+        # Generating PNGs for T028, T026, T021, and T018
+        print("Generating PNG for T029 ... ")
+        t029_data_min, t029_data_max, t029_data_mean = TSModel.get_cr(data_outputs["TO29"])
+        print("Generated PNG for T029, Min=%s  and Max=%s" %(t029_data_min, t029_data_max))
+        t029_file = open(data_outputs["TO29"]+".txt", "a")
+        t029_file.write(str(t029_data_min)+"\n")
+        t029_file.write(str(t029_data_max)+"\n")
+        t029_file.close()
+
+        print("Generating PNG for T026 ... ")
+        t026_data_min, t026_data_max, t026_data_mean = TSModel.get_cr(data_outputs["TO26"])
+        print("Generated PNG for T026, Min=%s  and Max=%s" %(t026_data_min, t026_data_max))
+        t026_file = open(data_outputs["TO26"]+".txt", "a")
+        t026_file.write(str(t026_data_min)+"\n")
+        t026_file.write(str(t026_data_max)+"\n")
+        t026_file.close()
+
+        print("Generating PNG for T021 ... ")
+        t021_data_min, t021_data_max, t021_data_mean = TSModel.get_cr(data_outputs["TO21"])
+        print("Generated PNG for T021, Min=%s  and Max=%s" %(t021_data_min, t021_data_max))
+        t021_file = open(data_outputs["TO21"]+".txt", "a")
+        t021_file.write(str(t021_data_min)+"\n")
+        t021_file.write(str(t021_data_max)+"\n")
+        t021_file.close()
+
+        print("Generating PNG for T018 ... ")
+        t018_data_min, t018_data_max, t018_data_mean = TSModel.get_cr(data_outputs["TO18"])
+        print("Generated PNG for T018, Min=%s  and Max=%s" %(t018_data_min, t018_data_max))
+        t018_file = open(data_outputs["TO18"]+".txt", "a")
+        t018_file.write(str(t018_data_min)+"\n")
+        t018_file.write(str(t018_data_max)+"\n")
+        t018_file.close()
+        
         print("Model Run is finished.")
