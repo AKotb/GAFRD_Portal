@@ -736,7 +736,8 @@ function clip_by_polygon(cl_all_lat, cl_all_lon, cur_layer)
 			props[polygon_values_list[12] + "_mean"] = polygon_values_list[15];
 
             popupContent = build_popup(props, polygon_values_list);
-            cur_layer.bindPopup(popupContent);
+            //cur_layer.bindPopup(myPopup, {maxWidth: "auto"});
+            cur_layer.bindPopup(popupContent, {maxHeight: 300, maxWidth: "auto"});
 
             //Create Table Contents
             const tr = document.createElement('tr');
@@ -794,6 +795,7 @@ function build_popup(props, values_list){
                 "<tr style='width:100%;'><td class='popup-key'>Area (KM^2)</td><td class='popup-val'>: "+(Math.round((props.area_km + Number.EPSILON) * 1000) / 1000)+"</td></tr>"+
                 "<tr style='width:100%;'><td class='popup-key'>Centroid Lat</td><td class='popup-val'>: "+(Math.round((props.cen_lat + Number.EPSILON) * 100000) / 100000)+"</td></tr>"+
                 "<tr style='width:100%;'><td class='popup-key'>Centroid Lon</td><td class='popup-val'>: "+(Math.round((props.cen_lon + Number.EPSILON) * 100000) / 100000)+"</td></tr>"+
+                "</table><table>"+
                 "<tr><td colspan='2'><div class='popup-subtitle'>Mean of Model Outputs</div></td></tr>"+
                 "<tr style='width:100%;'><td class='popup-key'>FinalSuitabilityModel</td><td class='popup-val'>: "+(Math.round((values_list[3] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
                 "<tr style='width:100%;'><td class='popup-key'>SoilSubModel</td><td class='popup-val'>: "+(Math.round((values_list[7] + Number.EPSILON) * 100) / 100)+"</td></tr>"+
