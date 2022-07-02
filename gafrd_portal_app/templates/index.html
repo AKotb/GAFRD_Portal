@@ -253,6 +253,10 @@ $(document).on({
 	var polygon_values_list = [];
 	var area = 0.0;
 	var popupContent = "";
+	var url_Egy_L0 = "/static/Extras/Egypt_Boundary.json";
+	var url_Egy_L1 = "/static/Extras/Governorates.json";
+	var url_Egy_L2 = "/static/Extras/Districts.json";
+	var url_Egy_L3 = "/static/Extras/Sub_Districts.json";
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -283,13 +287,127 @@ $(document).on({
 		"Map View": streets,
 	};
 
+    var vectorLayer_L0 = L.geoJson(null, {style: style_L0});
+    var vectorLayer_L1 = L.geoJson(null, {onEachFeature: forEachFeature_L1, style: style_L1});
+    var vectorLayer_L2 = L.geoJson(null, {onEachFeature: forEachFeature_L2, style: style_L2});
+
 	var editableLayers = new L.FeatureGroup();
 	var shapeLayers = new L.FeatureGroup();
 	map.addLayer(editableLayers);
 	var overlayMaps = {
+	"حدود الدولة":vectorLayer_L0,
+		"المحافظات":vectorLayer_L1,
+		"المراكز":vectorLayer_L2,
 		"الطبقات المضافة": editableLayers
+
 	};
+
+    function style_L0(feature) {
+	    return {
+	        fillColor: '#3592c4',
+	        fillOpacity: 0.05,
+	        weight: 3,
+	        opacity: 1,
+	        color: '#800000'
+	        //dashArray: '3'
+	    };
+	}
+
+	function style_L1(feature) {
+	    return {
+	        fillColor: '#3592c4',
+	        fillOpacity: 0.2,
+	        weight: 2,
+	        opacity: 1,
+	        color: '#3592c4',
+	        //dashArray: '3'
+	    };
+	}
+
+	function style_L2(feature) {
+	    return {
+	        fillColor: '#3592c4',
+	        fillOpacity: 0.2,
+	        weight: 1,
+	        opacity: 1,
+	        color: '#3592c4',
+	        dashArray: '3'
+	    };
+	}
+		var highlight = {
+			'fillColor': 'yellow',
+			'weight': 2,
+			'opacity': 1
+		};
+
+	function forEachFeature_L1(feature, layer) {
+        var lu_name = ""+feature.properties.Name;
+        var ADM1_EN = ""+feature.properties.ADM1_REF + ' - ' + layer.name;
+        var lu_type = ""+feature.properties.W2020;
+        var popupContent = "<div id='t1'><div class='caption'>Feature Properties</div><table><tr><td>ADM1_EN:</td><td>"+ ADM1_EN + "</td></tr><tr><td>B0</td><td>"+ "B1" +
+        "</td></tr></table></div><div class='save-btn' onclick='print_lu()' style='cursor: pointer;'>Print</div>";
+
+        var customOptions =
+        {
+            'maxWidth': '800',
+            //'maxHeight': '220',
+            'className' : 'custom'
+        }
+        layer.bindPopup(popupContent, customOptions);
+
+        layer.on("click", function (e) {
+            vectorLayer_L0.setStyle(style); //resets layer colors
+            vectorLayer_L1.setStyle(style); //resets layer colors
+            vectorLayer_L2.setStyle(style); //resets layer colors
+            layer.setStyle(highlight);  //highlights selected.
+            //alert("pivot_id: " + pivot_id + "\nlu_name: " + lu_name);
+        });
+    }
+
+	function forEachFeature_L2(feature, layer) {
+        var lu_name = ""+feature.properties.Name;
+        var ADM1_EN = ""+feature.properties.ADM1_REF + ' - ' + layer.name;
+        var lu_type = ""+feature.properties.W2020;
+        var popupContent = "<div id='t1'><div class='caption'>Feature Properties</div><table><tr><td>ADM1_EN:</td><td>"+ ADM1_EN + "</td></tr><tr><td>B0</td><td>"+ "B1" +
+        "</td></tr></table></div><div class='save-btn' onclick='print_lu()' style='cursor: pointer;'>Print</div>";
+
+        var customOptions =
+        {
+            'maxWidth': '800',
+            //'maxHeight': '220',
+            'className' : 'custom'
+        }
+        layer.bindPopup(popupContent, customOptions);
+
+        layer.on("click", function (e) {
+            vectorLayer_L0.setStyle(style); //resets layer colors
+            vectorLayer_L1.setStyle(style); //resets layer colors
+            vectorLayer_L2.setStyle(style); //resets layer colors
+            layer.setStyle(highlight);  //highlights selected.
+            //alert("pivot_id: " + pivot_id + "\nlu_name: " + lu_name);
+        });
+    }
+
 	var layerControl = L.control.layers(baseLayers, overlayMaps).addTo(map);
+
+
+	$.getJSON(url_Egy_L0, function(data) {
+		vectorLayer_L0.addData(data);
+    });
+
+    $.getJSON(url_Egy_L1, function(data) {
+		vectorLayer_L1.addData(data);
+    });
+
+    $.getJSON(url_Egy_L2, function(data) {
+		vectorLayer_L2.addData(data);
+    });
+
+    /*$.getJSON(url_Egy_L3, function(data) {
+		vectorLayer_L3.addData(data);
+    });*/
+
+
 	var drawPluginOptions = {
 	  position: 'topleft',
 	  draw: {
