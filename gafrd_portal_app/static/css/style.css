@@ -681,3 +681,26 @@ a:active {
     padding: 1px;
     margin: 5px 0;
 }
+
+.info 
+{
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	width: 195px;
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+	border: 2px solid #3592c450;
+	color: #3592c4;
+	text-align: right;
+	direction: rtl;
+}
+.info h4 
+{
+	margin: 0 0 5px;
+	color: #800000;
+	font-weight: bold;
+	font: 18px/20px Arial, Helvetica, sans-serif;
+	text-align: center;
+	
+}
