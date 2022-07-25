@@ -31,6 +31,12 @@ def contactus(request):
     # Render the HTML template contact_us.html
     return render(request, 'contact_us.html')
 
+def contactus_response(request):
+    """View function for e_library page of site."""
+
+    # Render the HTML template e_library.html
+    return render(request, 'success.html')
+
 
 def services(request):
     """View function for services page of site."""
@@ -73,6 +79,7 @@ def run_clip_polygon(request):
         # return user to required page
         # return render(request, 'index.html')
         return HttpResponse(contents)
+
 def download_shapefile(request):
     current_dir = os.path.dirname(__file__)
     download_dir = os.path.join(current_dir, 'static/drawn_layers')
@@ -105,3 +112,5 @@ def create_shp(out_dir, str_geojson):
         bytes = f.read()
         encoded = base64.b64encode(bytes)'''
     return f"{cur_file}.zip"
+
+    

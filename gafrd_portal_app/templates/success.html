@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% load static %}
+  <title>اتصل بنا</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/contactus_style.css' %}" />
+  <script type="text/javascript" src="{% static 'js/contactus_js.js' %}"></script>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="row">
+      {% load static %}
+      <img class="col_header1" src="{% static 'img/h_img1.png' %}">
+      <img class="col_header2" src="{% static 'img/h_img2.png' %}">
+      <div class="col_header3">
+        <p>جمهورية مصر العربية</p>
+        <p>الهيئة العامة لتنمية الثروة السمكية</p>
+      </div>
+      <img class="col_header4" src="{% static 'img/h_img3.png' %}">
+    </div>
+  </div>
+
+  <div class="row main">
+    <div class="leftcolumn" style="height: 72.5%;">
+      <div class="card card-menu">
+        <div class="row-menu">
+          <a href="{% url 'login' %}">
+            <div class="col-menu col-menu-all">تسجيل الدخول</div>
+          </a>
+          <a href="{% url 'contactus' %}">
+            <div class="col-menu col-menu-all">اتصل بنا</div>
+          </a>
+          <a href="{% url 'services' %}">
+            <div class="col-menu col-menu-all">خدماتنا</div>
+          </a>
+          <a href="{% url 'elibrary' %}">
+            <div class="col-menu col-menu-all">المكتبة الإلكترونية</div>
+          </a>
+          <a href="{% url 'index' %}">
+            <div class="col-menu col-menu-last">الرئيسية</div>
+          </a>
+        </div>
+      </div>
+      <div class="card card-map">
+
+        <header>
+          <h1>Success</h1>
+        </header>
+
+        <div id="form">
+
+          <div class="fish" id="fish"></div>
+          <div class="fish" id="fish2"></div>
+          <div style="padding-left: 15%; padding-top: 5%;">
+            <h2>
+              Thank you for contacting us, We have received your enquiry and will respond to you shortly.
+            </h2>
+          </div>
+          <div class="backtohome_btn">
+            <a href="{% url 'index' %}">Back to Home</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="rightcolumn">
+      <div class="card" style="background-color: #f1f1f1;">
+        <h2 style="padding-left: 30%;">GAFRD Portal</h2>
+        <p>General Authority For Fish resources Development</p>
+      </div>
+      <div class="card" style="background-color: #f1f1f1;">
+        <h2 style="padding-left: 30%;">Contact Information</h2>
+      </div>
+      <div class="card" style="background-color: #f1f1f1;">
+        <h3>Phone: </h3>
+        <p style="padding-left: 15%;">02/00000000 - 02/00000001 - 02/00000002</p>
+        <h3>E-Mail:</h3>
+        <p style="padding-left: 15%;">info@gafrdportal.com</p>
+        <h3>Address</h3>
+        <p style="padding-left: 15%;">Address Line 1, Address Line2 2, Address Line 3</p>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
