@@ -339,6 +339,53 @@ $(document).on({
 			'weight': 2,
 			'opacity': 1
 		};
+	//Information window for each Level of layers L1, L2
+	var info = L.control();
+
+	info.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+		this.update();
+		return this._div;
+	};
+	
+	function highlightFeature_L1(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			weight: 5,
+			color: '#0000FF',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+		//info.update(layer.feature.properties);
+		info.update = function () {
+				//console.log('1- props: ', props, 'props-name: ', props.ADM1_REF);
+				console.log('2- props: ', layer.feature.properties, 'props-name: ', layer.feature.properties.ADM1_REF);
+				this._div.innerHTML = '<h4>تفاصيل كل طبقة</h4><br />' +  (layer.feature.properties ?
+					'<b>المحافظـــة: ' + layer.feature.properties.ADM1_REF + '</b><br /><br /><b>المســـاحة (كم مربع):' + layer.feature.properties.Area_KM + ' </b>'
+					: 'حرك مؤشر الفأرة علي أي منطقة');
+			};
+
+			info.addTo(map);
+	}
+	
+	function resetHighlight_L1(e) {
+		var layer = e.target;
+		//layer.resetStyle(e.target);
+		layer.setStyle({
+			fillColor: '#3592c4',
+	        fillOpacity: 0.05,
+	        weight: 2,
+	        opacity: 0.8,
+	        color: '#3592c4'
+		});
+		info.update();
+		map.removeControl(info);
+	}
 
 	function forEachFeature_L1(feature, layer) {
         var lu_name = ""+feature.properties.Name;
@@ -355,15 +402,54 @@ $(document).on({
         }
         //layer.bindPopup(popupContent, customOptions);
 
-        layer.on("click", function (e) {
-            vectorLayer_L0.setStyle(style); //resets layer colors
-            vectorLayer_L1.setStyle(style); //resets layer colors
-            vectorLayer_L2.setStyle(style); //resets layer colors
-            layer.setStyle(highlight);  //highlights selected.
-            //alert("pivot_id: " + pivot_id + "\nlu_name: " + lu_name);
-        });
+        layer.on({
+				mouseover: highlightFeature_L1,
+				mouseout: resetHighlight_L1
+			});
     }
+	
+	function highlightFeature_L2(e) {
+		var layer = e.target;
 
+		layer.setStyle({
+			fillColor: '#3592c4',
+	        fillOpacity: 0.2,
+	        weight: 2,
+	        opacity: 0.7,
+	        color: '#111122',
+	        dashArray: '0'
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+		//info.update(layer.feature.properties);
+		info.update = function () {
+				//console.log('1- props: ', props, 'props-name: ', props.ADM2_EN);
+				console.log('2- props: ', layer.feature.properties, 'props-name: ', layer.feature.properties.ADM2_EN);
+				this._div.innerHTML = '<h4>تفاصيل كل طبقة</h4><br />' +  (layer.feature.properties ?
+					'<b>المـــركز: ' + layer.feature.properties.ADM2_EN + '</b><br /><br /><b>المســـاحة (كم مربع):' + layer.feature.properties.Area_KM + ' </b>'
+					: 'حرك مؤشر الفأرة علي أي منطقة');
+			};
+
+			info.addTo(map);
+	}
+	
+	function resetHighlight_L2(e) {
+		var layer = e.target;
+		//layer.resetStyle(e.target);
+		layer.setStyle({
+			fillColor: '#3592c4',
+	        fillOpacity: 0.0,
+	        weight: 1,
+	        opacity: 0.7,
+	        color: '#111122',
+	        dashArray: '3'
+		});
+		info.update();
+		map.removeControl(info);
+	}
+	
 	function forEachFeature_L2(feature, layer) {
         var lu_name = ""+feature.properties.Name;
         var ADM1_EN = ""+feature.properties.ADM1_REF + ' - ' + layer.name;
@@ -379,13 +465,10 @@ $(document).on({
         }
         //layer.bindPopup(popupContent, customOptions);
 
-        layer.on("click", function (e) {
-            vectorLayer_L0.setStyle(style); //resets layer colors
-            vectorLayer_L1.setStyle(style); //resets layer colors
-            vectorLayer_L2.setStyle(style); //resets layer colors
-            layer.setStyle(highlight);  //highlights selected.
-            //alert("pivot_id: " + pivot_id + "\nlu_name: " + lu_name);
-        });
+        layer.on({
+				mouseover: highlightFeature_L2,
+				mouseout: resetHighlight_L2
+			});
     }
 
 	var layerControl = L.control.layers(baseLayers, overlayMaps).addTo(map);

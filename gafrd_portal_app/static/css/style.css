@@ -595,112 +595,149 @@
 	border-collapse: collapse;
 	width: 100%;
 	direction: ltr;
-  }
-  
-  #polyTree th {
-	padding-top: 12px;
-	padding-bottom: 12px;
-	text-align: center;
-	background-color: #4CAF50;
-	color: white;
-  }
-  
-  #polyTree td, #polyTree th {
-	border: 1px solid #ddd;
-	padding: 8px;
-	font-size: 14px;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+  margin-left: 5px;
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+  display: block;
+}
+
+#polyTree {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  direction: ltr;
+}
+
+#polyTree th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+}
+
+#polyTree td, #polyTree th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#polyTree tr > td {
+  text-align: center;
+}
+
+#polyTree tr:nth-child(even){background-color: #f2f2f2;}
+
+.btn-action
+{
+    width: 55px; 
+    height: 25px; 
+    font-size: 12px; 
+    font-weight: bold; 
+    font-family: Arial, Helvetica, sans-serif; 
+    background-color: white; 
+    color: #4CAF50; 
+    border: none;
+}
+
+.popup-key{
+    color: rgb(47, 85, 151);
+    font-weight: bold;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 70%;
+    border-bottom: 1px solid #bbf;
+}
+
+.popup-key:hover{
+    color: white;
+    background-color: rgb(47, 85, 151);
+}
+
+.popup-val{
+    color: rgb(30, 30, 50);
+    font-weight: bold;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 30%;
+    border-bottom: 1px solid #bbf;
+}
+
+.popup-val:hover{
+    color: white;
+    background-color: rgb(30, 30, 50);
+}
+
+.popup-title{
+    color: white;
+    background-color: #4CAF50;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 2px rgba(0,0,0,0.2);
+    text-align: center;
+    padding: 4px;
+
+}
+
+.popup-subtitle{
+    color: #555;
+    background-color: #ddd;
+    font-weight: bold;
+    font-size: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 2px rgba(0,0,0,0.2);
+    text-align: center;
+    padding: 1px;
+    margin: 5px 0;
+}
+
+.info 
+{
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	width: 195px;
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+	border: 2px solid #3592c450;
+	color: #3592c4;
+	text-align: right;
+	direction: rtl;
+}
+.info h4 
+{
+	margin: 0 0 5px;
+	color: #800000;
 	font-weight: bold;
-  }
-  
-  #polyTree tr > td {
+	font: 18px/20px Arial, Helvetica, sans-serif;
 	text-align: center;
-  }
-  
-  #polyTree tr:nth-child(even){background-color: #f2f2f2;}
-  
-  .btn-action
-  {
-	  width: 55px; 
-	  height: 25px; 
-	  font-size: 12px; 
-	  font-weight: bold; 
-	  font-family: Arial, Helvetica, sans-serif; 
-	  background-color: white; 
-	  color: #4CAF50; 
-	  border: none;
-  }
-  
-  .popup-key{
-	  color: rgb(47, 85, 151);
-	  font-weight: bold;
-	  font-size: 12px;
-	  font-family: Arial, Helvetica, sans-serif;
-	  width: 70%;
-	  border-bottom: 1px solid #bbf;
-  }
-  
-  .popup-key:hover{
-	  color: white;
-	  background-color: rgb(47, 85, 151);
-  }
-  
-  .popup-val{
-	  color: rgb(30, 30, 50);
-	  font-weight: bold;
-	  font-size: 12px;
-	  font-family: Arial, Helvetica, sans-serif;
-	  width: 30%;
-	  border-bottom: 1px solid #bbf;
-  }
-  
-  .popup-val:hover{
-	  color: white;
-	  background-color: rgb(30, 30, 50);
-  }
-  
-  .popup-title{
-	  color: white;
-	  background-color: #4CAF50;
-	  font-weight: bold;
-	  font-size: 16px;
-	  font-family: Arial, Helvetica, sans-serif;
-	  border: solid 2px rgba(0,0,0,0.2);
-	  text-align: center;
-	  padding: 4px;
-  
-  }
-  
-  .popup-subtitle{
-	  color: #555;
-	  background-color: #ddd;
-	  font-weight: bold;
-	  font-size: 13px;
-	  font-family: Arial, Helvetica, sans-serif;
-	  border: solid 2px rgba(0,0,0,0.2);
-	  text-align: center;
-	  padding: 1px;
-	  margin: 5px 0;
-  }
-  
-  .info 
-  {
-	  padding: 6px 8px;
-	  font: 14px/16px Arial, Helvetica, sans-serif;
-	  background: white;
-	  width: 195px;
-	  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-	  border-radius: 5px;
-	  border: 2px solid #3592c450;
-	  color: #3592c4;
-	  text-align: right;
-	  direction: rtl;
-  }
-  .info h4 
-  {
-	  margin: 0 0 5px;
-	  color: #800000;
-	  font-weight: bold;
-	  font: 18px/20px Arial, Helvetica, sans-serif;
-	  text-align: center;
-	  
-  }
+	
+}
