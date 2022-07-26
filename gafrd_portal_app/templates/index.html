@@ -20,10 +20,12 @@
 	{% load static %}
 	<script src="{% static 'js/shpwrite.js' %}"></script>
 	<script src="{% static 'js/leaflet.geometryutil.js' %}"></script>
+	<script src="{% static 'js/chart.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-1.9.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.ui.touch-punch.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/jquery-ui.js" type="text/javascript"></script>
     <link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.9/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -214,7 +216,8 @@
                     </th>
                 </tr>
             </table>
-            <button style="padding-right: 20%; float: left; padding-left: 20%;" class="button" onclick="hide_results();">رجوع</button>
+            <button style="padding-right: 15%; float: left; padding-left: 15%;" class="button_return" onclick="hide_results();">رجوع</button>
+			<button style="padding-right: 10%; float: right; padding-left: 10%;" class="button_print" onclick="print_report();">طباعة التقرير</button>
         </div>
     </div>
 </div>
@@ -257,6 +260,8 @@ $(document).on({
 	var url_Egy_L1 = "/static/Extras/Governorates.json";
 	var url_Egy_L2 = "/static/Extras/Districts.json";
 	var url_Egy_L3 = "/static/Extras/Sub_Districts.json";
+	var reb_name = "";
+	//var dist_name = "مركز ";
 	var satellite = L.tileLayer(mapUrl, {
 		maxZoom: 18,
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
@@ -363,6 +368,7 @@ $(document).on({
 		}
 		//info.update(layer.feature.properties);
 		info.update = function () {
+				reb_name = "محافظة " + layer.feature.properties.ADM1_REF;
 				//console.log('1- props: ', props, 'props-name: ', props.ADM1_REF);
 				console.log('2- props: ', layer.feature.properties, 'props-name: ', layer.feature.properties.ADM1_REF);
 				this._div.innerHTML = '<h4>تفاصيل كل طبقة</h4><br />' +  (layer.feature.properties ?
@@ -384,6 +390,7 @@ $(document).on({
 	        color: '#3592c4'
 		});
 		info.update();
+		reb_name = "";
 		map.removeControl(info);
 	}
 
@@ -426,6 +433,7 @@ $(document).on({
 		//info.update(layer.feature.properties);
 		info.update = function () {
 				//console.log('1- props: ', props, 'props-name: ', props.ADM2_EN);
+				reb_name = "مركز " + layer.feature.properties.ADM2_EN;
 				console.log('2- props: ', layer.feature.properties, 'props-name: ', layer.feature.properties.ADM2_EN);
 				this._div.innerHTML = '<h4>تفاصيل كل طبقة</h4><br />' +  (layer.feature.properties ?
 					'<b>المـــركز: ' + layer.feature.properties.ADM2_EN + '</b><br /><br /><b>المســـاحة (كم مربع):' + layer.feature.properties.Area_KM + ' </b>'
@@ -447,6 +455,7 @@ $(document).on({
 	        dashArray: '3'
 		});
 		info.update();
+		reb_name = "";
 		map.removeControl(info);
 	}
 	
@@ -880,6 +889,149 @@ function hide_results(){
 
 	map.setView([27.3, 30.8], 6);
 }
+var win = null;
+//var ctx = null;
+
+function print_report(){
+	//alert("I am a Report...");
+	var color1 = '#203239';
+    var color2 = '#E0DDAA'; //'#ed6';
+	var today = new Date();
+	var day = today.getDay();
+	var daylist = ["Sunday","Monday","Tuesday","Wednesday ","Thursday","Friday","Saturday"];
+	var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+	var time = today.getHours() + ":" + today.getMinutes();
+	var dateTime = date+' '+time;
+	//var t1 = document.getElementById('t1').innerHTML;
+	var style = "<style>";
+	style = style + ".header{padding: 0; font-size: 20px; font-weight: bold; line-height: 20px; text-align: right;    background: white;}";
+	style = style + ".col_header1{float: left; width: 15%; padding: 0; height: 100px; border: 0px solid black;}";
+	//style = style + ".col_header2{float: left; width: 58%; padding: 0; height: 100px; border: 1px solid black;}";
+	style = style + ".col_header3{float: left; width: 65%; padding: 0 10px; height: 100px; border: 0px solid black; text-align: center;}";
+	style = style + ".col_header4{float: left; width: 15%; padding: 0; height: 100px; border: 0px solid black;}";
+	style = style + ".main {height: calc(100% - 102px);}";
+	style = style + "</style>";
+	
+	var script_content = "<script>"
+	+ "function loadGraph(){"
+	+ "const ctx = win.document.getElementById('line-chart').getContext('2d');"
+	+ "const vlabels = ['Final Suitability Model Mean','Soil SubModel Mean','Socio Economic Mean','Water Availability SubModel Mean'];"
+	+ "const barColors = ['rgba(255, 99, 132, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(255, 205, 86, 0.2)', 'rgba(75, 192, 192, 0.2)'];"
+	+ "const borderColors = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)'];"
+	+ "const data = {labels: vlabels, datasets: [{label: 'My First Dataset', data: [77, 73, 26, 24], 		  backgroundColor: barColors, borderColor: borderColors, borderWidth: 1, }]};"
+	+ "const config = {type: 'bar', data: data, options: {legend: {display: false}, title: {display: true, text: 'Final Model Mean Values'}, scales: { y: { beginAtZero: true }}},};"
+	+ "const pivotChart = new Chart(ctx, config);"
+	+ "}"
+	+ "<//script>";
+	
+	var content = "<!DOCTYPE html>"
+		+ "<html><head>"
+		+ "<title>GAFRD Report</title>"
+		+ "{% load static %}"
+		+ "<script src='{% static "js/chart.js"%}'><\/script>"
+		+ "<script src='{% static "js/load_report_graph.js"%}'><\/script>"
+		+ style
+		+ "</head>"
+		+ "<body onload='loadGraph()'><div class='header'><div class='row'><img class='col_header1' src='{% static "img/h_img1.png" %}'/>"
+		+ "<div class='col_header3'><p>جمهورية مصر العربية</p><p>الهيئة العامة لتنمية الثروة السمكية</p></div>"
+		+ "<img class='col_header4' src='{% static "img/h_img3.png" %}'/></div></div>"
+		+ "<br><br><br><br><div style='width: 100%; text-align: center; padding-top: 15px; padding-bottom: 15px; font-weight: bold; font-size: 18px; border: 1px solid black; direction: rtl; margin-top: 50px; background-color: #3592c4; color: white'>تقرير تفصيلي عن : "
+		+ "</div><br><br>"
+		+ "<div class='row main'>"
+		+ "<div style='width: 100%; border: 1px solid black;'>"
+		+ "<table align='center' dir='rtl' width='100%'>"
+		+ "<tr width='50%'><td><img style='width:100%;height:200px;' src="+listOfImages[0]['_url']+"/></td>"
+		+ "<td><img style='width:100%;height:200px;' src="+listOfImages[1]['_url']+"/></td></tr>"
+		+ "<tr width='50%'><td><img style='width:100%;height:200px;' src="+listOfImages[2]['_url']+"/></td>"
+		+ "<td><img style='width:100%;height:200px;' src="+listOfImages[3]['_url']+"/></td></tr>"
+		+ "</table></div>"
+		+ "<br><br><div style='width: 100%; border: 1px solid black;'>"
+		+ "<table align='center' dir='ltr' width='100%' style='border: 1px solid black;'>"
+		+ "<tr width='100%' style='border: 1px solid black;'>"
+		+ "<th style='border: 1px solid black; background-color: #3592c4; color: white;'>Final Suitability Model Mean</th>"
+		+ "<th style='border: 1px solid black; background-color: #3592c4; color: white;'>Soil SubModel Mean</th>"
+		+ "<th style='border: 1px solid black; background-color: #3592c4; color: white;'>Socio Economic Mean</th>"
+		+ "<th style='border: 1px solid black; background-color: #3592c4; color: white;'>Water Availability SubModel Mean</th>"
+		+ "</tr>"
+		+ "<tr width='100%' style='border: 1px solid black;'>"
+		+ "<td style='text-align: center; border: 1px solid black;'>77.218925</td>"
+		+ "<td style='text-align: center; border: 1px solid black;'>3.6513283</td>"
+		+ "<td style='text-align: center; border: 1px solid black;'>26.002209</td>"
+		+ "<td style='text-align: center; border: 1px solid black;'>24.98878</td>"
+		+ "</tr></table></div>"
+		+ script_content
+		+ "</div></body></html>";
+		
+
+	// CREATE A WINDOW OBJECT.
+	win = window.open('', '_blank', 'height=600,width=800');
+	win.document.write(content);
+	/*win.document.write('<!DOCTYPE html>');
+	win.document.write('<html><head>');
+	win.document.write('<title>GAFRD Report</title>');   // <title> FOR PDF HEADER.
+	win.document.write("{% load static %}");
+	win.document.write("<script src='{% static "js/chart.js"%}'><\/script>");
+	win.document.write("<script src='{% static "js/load_report_graph.js"%}'><\/script>");
+	win.document.write('<script type="text/javascript" src="{% static 'js/chart.js' %}"><\/script>');
+	win.document.write('<script type="text/javascript" src="{% static 'js/load_report_graph.js' %}"><\/script>');
+	win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
+	win.document.write('</head>');
+	win.document.write('<body><div class="header"><div class="row">{% load static %}<img class="col_header1" src="{% static 'img/h_img1.png' %}">');
+	win.document.write('<div class="col_header3"><p>جمهورية مصر العربية</p><p>الهيئة العامة لتنمية الثروة السمكية</p></div>');
+	win.document.write('<img class="col_header4" src="{% static 'img/h_img3.png' %}"></div></div>');
+	win.document.write('<br><br><br><br><div style="width: 100%; text-align: center; padding-top: 15px; padding-bottom: 15px; font-weight: bold; font-size: 18px; border: 1px solid black; direction: rtl; margin-top: 50px; background-color: #3592c4; color: white">تقرير تفصيلي عن : ');
+	win.document.write(reb_name);
+	win.document.write('</div><br><br>');
+	win.document.write('<div class="row main">');
+	win.document.write('<div style="width: 100%; border: 1px solid black;">');
+	win.document.write('<table align="center" dir="rtl" width="100%">');
+	win.document.write('<tr width="50%">');
+	win.document.write('<td>');
+	win.document.write('<img style="width:100%;height:200px;" src='+listOfImages[0]["_url"]+'>');
+	win.document.write('</td>');
+	win.document.write('<td width="50%">');
+	win.document.write('<img style="width:100%;height:200px;" src='+listOfImages[1]["_url"]+'>');
+	win.document.write('</td>');
+	win.document.write('</tr>');
+	win.document.write('<tr>');
+	win.document.write('<td width="50%">');
+	win.document.write('<img style="width:100%;height:200px;" src='+listOfImages[2]["_url"]+'>');
+	win.document.write('</td>');
+	win.document.write('<td width="50%">');
+	win.document.write('<img style="width:100%;height:200px;" src='+listOfImages[3]["_url"]+'>');
+	win.document.write('</td>');
+	win.document.write('</tr>');
+	win.document.write('</table>');
+	win.document.write('</div>');
+	win.document.write('<br><br><div style="width: 100%; border: 1px solid black;">');
+	win.document.write('<table align="center" dir="ltr" width="100%" style="border: 1px solid black;">');
+	win.document.write('<tr width="100%" style="border: 1px solid black;">');
+	win.document.write('<th style="border: 1px solid black; background-color: #3592c4; color: white;">Final Suitability Model Mean</th>');
+	win.document.write('<th style="border: 1px solid black; background-color: #3592c4; color: white;">Soil SubModel Mean</th>');
+	win.document.write('<th style="border: 1px solid black; background-color: #3592c4; color: white;">Socio Economic Mean</th>');
+	win.document.write('<th style="border: 1px solid black; background-color: #3592c4; color: white;">Water Availability SubModel Mean</th>');
+	win.document.write('</tr>');
+	win.document.write('<tr width="100%" style="border: 1px solid black;">');
+	win.document.write('<td style="text-align: center; border: 1px solid black;">77.218925</td>');
+	win.document.write('<td style="text-align: center; border: 1px solid black;">3.6513283</td>');
+	win.document.write('<td style="text-align: center; border: 1px solid black;">26.002209</td>');
+	win.document.write('<td style="text-align: center; border: 1px solid black;">24.98878</td>');
+	win.document.write('</tr>');
+	win.document.write('</table>');
+	win.document.write('</div>');
+	win.document.write('<br><div style="width: 100%; border: 1px solid black;">');
+	win.document.write('<div id="chart-container">');
+	win.document.write('<canvas id="line-chart" style="width:100%; height: 200px;"></canvas></div>');
+	win.document.write('</div></div>');
+	win.document.write('</body></html>');*/
+	//ctx = win.document.getElementById("line-chart").getContext("2d");
+	//alert("ctx: " + ctx);
+	//win.document.onload= loadGraph();
+	//win.document.close(); 	// CLOSE THE CURRENT WINDOW.
+	
+	win.print();    // PRINT THE CONTENTS.
+	
+}
 
 window.onload=hide_results();
 
@@ -1038,6 +1190,57 @@ for (i = 0; i < toggler.length; i++) {
     this.classList.toggle("caret-down");
   });
 }
+
+/*function loadGraph()
+{
+	const ctx = win.document.getElementById("line-chart").getContext("2d");
+	const vlabels = ['Final Suitability Model Mean','Soil SubModel Mean','Socio Economic Mean','Water Availability SubModel Mean'];
+	
+	const barColors = [
+		  'rgba(255, 99, 132, 0.2)',
+		  'rgba(255, 159, 64, 0.2)',
+		  'rgba(255, 205, 86, 0.2)',
+		  'rgba(75, 192, 192, 0.2)'
+		];
+		
+	const borderColors = [
+		  'rgb(255, 99, 132)',
+		  'rgb(255, 159, 64)',
+		  'rgb(255, 205, 86)',
+		  'rgb(75, 192, 192)'
+		];
+		
+	const data = {
+		labels: vlabels,
+		datasets: [{
+		  label: 'My First Dataset',
+		  data: [77, 73, 26, 24],
+		  backgroundColor: barColors,
+		  borderColor: borderColors,
+		  borderWidth: 1,
+		}]
+	};
+
+	const config = {
+	  type: 'bar',
+	  data: data,
+	  options: {
+		legend: {display: false},
+		title: {
+		  display: true,
+		  text: "Final Model Mean Values"
+		},
+		scales: {
+		  y: {
+			beginAtZero: true
+		  }
+		}
+	  },
+	};
+
+	const pivotChart = new Chart(ctx, config);
+	console.log("pivotChart", pivotChart);
+}*/
 </script>
 <div class="modal2"><h3>Please Wait, Loading...</h3>
 </div>

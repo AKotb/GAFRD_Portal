@@ -741,3 +741,34 @@
 	text-align: center;
 	
 }
+.button_return {
+	  background-color: #4CAF50; /* Green */
+	  border: none;
+	  color: white;
+	  padding: 10px 20px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 20px;
+	  font-weight:bold;
+	  margin-top: 15px;
+	  margin-left: 0px;
+	  transition-duration: 0.4s;
+	  cursor: pointer;
+}
+
+.button_print {
+	  background-color: #4CAF50; /* Green */
+	  border: none;
+	  color: white;
+	  padding: 10px 20px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 20px;
+	  font-weight:bold;
+	  margin-top: 15px;
+	  margin-right: 2px;
+	  transition-duration: 0.4s;
+	  cursor: pointer;
+}
