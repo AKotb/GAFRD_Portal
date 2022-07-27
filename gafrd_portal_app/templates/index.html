@@ -778,10 +778,10 @@ function checkbox_status(id){
 }
 
 function load_results(id){
-    var top_eg = 31.5788540066
-    var left_eg = 30.0000142271
-    var right_eg = 32.0100142271
-    var bottom_eg = 30.6618540066
+    var top_eg = 31.671583347; //31.5788540066
+    var left_eg = 24.695483806; //30.0000142271
+    var right_eg = 36.895483806; //32.0100142271
+    var bottom_eg = 21.993583347; //30.6618540066
 
     // Extent for South Africa Data
     /*
@@ -791,19 +791,20 @@ function load_results(id){
     var bottom_sa = -25.436225
     */
 
-    var imageUrl = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.png';
+    var imageUrl = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+id+'.png';
     //var imageBounds = [[-22.137060, 26.406370], [-25.436225, 31.788092]]; // for south africa data
     var imageBounds = [[top_eg, right_eg], [bottom_eg, left_eg]];
 	image = L.imageOverlay(imageUrl, imageBounds);
 	image.addTo(map);
 	image.bringToFront();
 	//map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8); // for south africa data
-	map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9);
+	//map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9); // for Delta of Egypt
+	map.setView(new L.LatLng(26.83258335, 30.79548381), 6); // for Whole of Egypt
 	listOfImages.push(image);
 }
 
 function remove_results(id){
-	var checkedURL = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.png';
+	var checkedURL = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+id+'.png';
 	listOfImages.forEach(function(entry) {
     	if(checkedURL === entry["_url"]){
     		map.removeLayer(entry);
@@ -818,9 +819,9 @@ function remove_results(id){
 }
 
 function load_legend_img(id){
-    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'_legend.jpg';
+    document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+id+'_legend.jpg';
     listOfLegendImages.push(id);
-    document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+id+'.tif.txt');
+    document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+id+'.tif.txt');
     listOfLegendMinMaxValues.push(id);
 }
 
@@ -836,7 +837,7 @@ function remove_legend_img(id){
     if (listOfLegendImages.length === 0) {
         document.getElementById("legend_img_src").src = '';   
     }else{
-        document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+listOfLegendImages.at(-1)+'_legend.jpg';   
+        document.getElementById("legend_img_src").src = 'http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+listOfLegendImages.at(-1)+'_legend.jpg';
     }
 }
 
@@ -852,9 +853,9 @@ function remove_legend_minmaxvalues(id){
     if (listOfLegendMinMaxValues.length === 0) {
         document.getElementById("legend_min_max_div").innerHTML = '';
     }else{
-        document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt/'+listOfLegendMinMaxValues.at(-1)+'.tif.txt');
+        document.getElementById("legend_min_max_div").innerHTML = read_min_max_files('http://127.0.0.1:8000/static/Model_Data/outputs/Egypt2/'+listOfLegendMinMaxValues.at(-1)+'.tif.txt');
     }
-}
+}res
 
 function display_results(){
 	document.getElementById("results_div").style.display = 'block';
@@ -862,7 +863,8 @@ function display_results(){
     document.getElementById("legend_min_max_div").style.display = 'block';
 	document.getElementById("parameters_div").style.display = 'none';
 	//map.setView(new L.LatLng(-23.475295543475283,29.17847128786904), 8); //for South Africa
-	map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9);
+	//map.setView(new L.LatLng(31.047621381135954, 31.09472389830886), 9); // for Delta of Egypt
+	map.setView(new L.LatLng(26.83258335, 30.79548381), 6); // for Whole of Egypt
 }
 
 function hide_results(){

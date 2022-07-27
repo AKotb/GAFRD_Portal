@@ -55,8 +55,8 @@ def elibrary(request):
 def model_call(request):
     if request.method == 'POST' and 'run_module' in request.POST:
         current_dir = os.path.dirname(__file__)
-        in_dir = os.path.join(current_dir, 'static/Model_Data/inputs/Egypt')
-        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
+        in_dir = os.path.join(current_dir, 'static/Model_Data/inputs/Egypt2')
+        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt2')
 
         ExecuteModel.run(in_dir, out_dir)
 
@@ -67,7 +67,7 @@ def model_call(request):
 def run_clip_polygon(request):
     if request.is_ajax and request.method == "POST":
         current_dir = os.path.dirname(__file__)
-        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt')
+        out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt2')
         ststic_path = os.path.join(current_dir, 'static')
         model_final_out_files = ["FinalSuitabilityMapModel.tif", "SoilSubModel.tif", "SocioEconomic.tif", "WaterAvailabilitySubModel.tif"]
         polygonRequestDir = os.path.join(ststic_path, "polygons")

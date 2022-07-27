@@ -58,6 +58,7 @@ class ExecuteModel:
             weight_list["W{}".format(lineSplit[0])] = [float(x) for x in lineSplit[1:] if len(x.strip(" ")) > 0]
         # --------------------------------------------------------------------
         print("Run Tools 1, 2, & 3")
+        print(data_inputs["I12"], data_outputs["TO1"])
         TSModel.vector_to_raster(data_inputs["I12"], data_outputs["TO1"])
         TSModel.is_null(data_outputs["TO1"], data_outputs["TO2"])
         TSModel.clip_raster(data_outputs["TO2"], data_inputs["I16"], data_outputs["TO3"])
@@ -72,25 +73,34 @@ class ExecuteModel:
         TSModel.is_null(data_outputs["TO7"], data_outputs["TO8"])
         TSModel.clip_raster(data_outputs["TO8"], data_inputs["I16"], data_outputs["TO9"])
 
-        print("Run Tools 10, 11, & 12")
-        TSModel.vector_to_raster(data_inputs["I15"], data_outputs["TO10"])
-        TSModel.is_null(data_outputs["TO10"], data_outputs["TO11"])
-        TSModel.clip_raster(data_outputs["TO11"], data_inputs["I16"], data_outputs["TO12"])
+        print("Run Tools 10*, 11*, & 12*")
+        # TSModel.vector_to_raster(data_inputs["I15"], data_outputs["TO10"])
+        # TSModel.is_null(data_outputs["TO10"], data_outputs["TO11"])
+        # TSModel.clip_raster(data_outputs["TO11"], data_inputs["I16"], data_outputs["TO12"])
 
         print("Run Tool 13")
-        TSModel.raster_calc_mul(
+        '''TSModel.raster_calc_mul(
             [data_outputs["TO3"], data_outputs["TO6"], data_outputs["TO9"], data_outputs["TO12"]],
+            data_outputs["TO13"])'''
+
+        TSModel.raster_calc_mul(
+            [data_outputs["TO3"], data_outputs["TO6"], data_outputs["TO9"], data_outputs["TO9"]],
             data_outputs["TO13"])
 
-        print("Run Tools 14, 15, 16, & 17")
+        print("Run Tools 14, 15*, 16, & 17")
         TSModel.raster_reclassify(data_inputs["I2"], reclassify_list["R14"], data_outputs["TO14"])
-        TSModel.raster_reclassify(data_inputs["I3"], reclassify_list["R15"], data_outputs["TO15"])
+        # TSModel.raster_reclassify(data_inputs["I3"], reclassify_list["R15"], data_outputs["TO15"])
         TSModel.raster_reclassify(data_inputs["I4"], reclassify_list["R16"], data_outputs["TO16"])
         TSModel.raster_reclassify(data_inputs["I5"], reclassify_list["R17"], data_outputs["TO17"])
 
         print("Run Tool 18")
-        TSModel.raster_calc_add(
+        '''TSModel.raster_calc_add(
             [data_outputs["TO14"], data_outputs["TO15"], data_outputs["TO16"], data_outputs["TO17"]],
+            weight_list["W18"],
+            data_outputs["TO18"])'''
+
+        TSModel.raster_calc_add(
+            [data_outputs["TO14"], data_outputs["TO14"], data_outputs["TO16"], data_outputs["TO17"]],
             weight_list["W18"],
             data_outputs["TO18"])
 

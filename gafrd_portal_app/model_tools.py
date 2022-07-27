@@ -192,7 +192,8 @@ class TSModel:
             band_arr2 = band_arr2[:min_rows, :min_cols]
             band_arr3 = band_arr3[:min_rows, :min_cols]
             band_arr4 = band_arr4[:min_rows, :min_cols]
-            band_arr_all = 0.25 * (band_arr1 + band_arr2 + band_arr3 + band_arr4)
+            # band_arr_all = 0.25 * (band_arr1 + band_arr2 + band_arr3 + band_arr4)
+            band_arr_all = 0.3333 * (band_arr1 + band_arr2 + band_arr3)
             band_arr_all[np.where(band_arr_all < 1.0)] = 0
             band_arr_all[np.where(band_arr_all == 1.0)] = 1
             band_arr_all[np.where(band_arr_all > 1.0)] = 10000
