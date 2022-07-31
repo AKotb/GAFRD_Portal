@@ -53,7 +53,8 @@ def elibrary(request):
 
 
 def model_call(request):
-    if request.method == 'POST' and 'run_module' in request.POST:
+    #if request.method == 'POST' and 'run_module' in request.POST:
+    if is_ajax(request) and 'run_module' in request.POST:
         current_dir = os.path.dirname(__file__)
         in_dir = os.path.join(current_dir, 'static/Model_Data/inputs/Egypt2')
         out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt2')
@@ -65,7 +66,8 @@ def model_call(request):
 
 
 def run_clip_polygon(request):
-    if request.is_ajax and request.method == "POST":
+    #if request.is_ajax and request.method == "POST":
+    if is_ajax(request):
         current_dir = os.path.dirname(__file__)
         out_dir = os.path.join(current_dir, 'static/Model_Data/outputs/Egypt2')
         ststic_path = os.path.join(current_dir, 'static')
@@ -113,4 +115,7 @@ def create_shp(out_dir, str_geojson):
         encoded = base64.b64encode(bytes)'''
     return f"{cur_file}.zip"
 
-    
+
+def is_ajax(request):
+    if request.is_ajax and request.method == "POST":
+        return True
